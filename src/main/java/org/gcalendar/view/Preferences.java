@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.TimeZone;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -93,7 +94,7 @@ public class Preferences extends Stage {
     final BorderPane root = new BorderPane();
     root.setCenter(gridContainer);
     this.setResizable(false);
-    this.setScene(new Scene(root, 550, 250));
+    this.setScene(new Scene(root, 650, 250));
 
     loadPreferences(this);
 
@@ -115,6 +116,7 @@ public class Preferences extends Stage {
     saveBtn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
+
         if (gCalendarNameTxtFld.getText().isEmpty() || musicDirectoryTxtFld.getText().isEmpty()
             || timeZoneChooser.getSelectionModel().isEmpty()) {
           Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -125,37 +127,48 @@ public class Preferences extends Stage {
           alert.show();
           return;
         }
-        try {
-          createGoogleCalendar();
 
-          Properties properties = new Properties();
-          properties.setProperty("googleCalendarId", gCalendarIdTxt.getText());
-          properties.setProperty("googleCalendarName", gCalendarNameTxtFld.getText());
-          properties.setProperty("musicDirectory", musicDirectoryTxtFld.getText());
-          properties.setProperty("timeZone",
-                                 timeZoneChooser.getSelectionModel().getSelectedItem().toString());
+        Task task = new Task<Void>() {
+          @Override
+          public Void call() {
+            try {
+              createGoogleCalendar();
 
-          File file = new File("preferences.properties");
-          FileOutputStream fileOut = new FileOutputStream(file);
-          properties.store(fileOut, "Google Calendar Alarm preferences");
-        } catch (IOException io) {
-          logger.error("IOException: " + io.getMessage());
-          Alert alert = new Alert(Alert.AlertType.ERROR);
-          alert.setResizable(true);
-          alert.initOwner(root.getScene().getWindow());
-          alert.setTitle("ERROR!");
-          alert.setContentText("Something went wrong! Please contact the developer!");
-          alert.show();
-        } finally {
-          if (new File("preferences.properties").exists()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setResizable(true);
-            alert.initOwner(root.getScene().getWindow());
-            alert.setTitle("Success!");
-            alert.setContentText("Your preferences have been successfully saved!");
-            alert.show();
+              Properties properties = new Properties();
+              properties.setProperty("googleCalendarId", gCalendarIdTxt.getText());
+              properties.setProperty("googleCalendarName", gCalendarNameTxtFld.getText());
+              properties.setProperty("musicDirectory", musicDirectoryTxtFld.getText());
+              properties.setProperty("timeZone",
+                                     timeZoneChooser.getSelectionModel().getSelectedItem()
+                                         .toString());
+
+              File file = new File("preferences.properties");
+              FileOutputStream fileOut = new FileOutputStream(file);
+              properties.store(fileOut, "Google Calendar Alarm preferences");
+            } catch (IOException io) {
+              logger.error("IOException: " + io.getMessage());
+              Alert alert = new Alert(Alert.AlertType.ERROR);
+              alert.setResizable(true);
+              alert.initOwner(root.getScene().getWindow());
+              alert.setTitle("ERROR!");
+              alert.setContentText("Something went wrong! Please contact the developer!");
+              alert.show();
+            } finally {
+              if (new File("preferences.properties").exists()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setResizable(true);
+                alert.initOwner(root.getScene().getWindow());
+                alert.setTitle("Success!");
+                alert.setContentText("Your preferences have been successfully saved! Be careful!"
+                                     + "When editing your preferences, new calendars can be created on your google account!");
+                alert.show();
+              }
+            }
+            return null;
           }
-        }
+        };
+
+        new Thread(task).start();
       }
     });
   }
@@ -184,8 +197,10 @@ public class Preferences extends Stage {
         gCalendarNameTxtFld.setText(properties.getProperty("googleCalendarName"));
         musicDirectoryTxtFld.setText(properties.getProperty("musicDirectory"));
         timeZoneChooser.getSelectionModel().select(properties.getProperty("timeZone"));
-
         fileIn.close();
+
+        gCalendarNameTxtFld.setDisable(true);
+        timeZoneChooser.setDisable(true);
       }
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
