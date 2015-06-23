@@ -1,4 +1,4 @@
-package org.gcalendar;
+package org.gcalendar.service;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
