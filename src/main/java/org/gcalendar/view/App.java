@@ -1,8 +1,29 @@
 package org.gcalendar.view;
 
-import org.joda.time.DateTime;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 
+import it.sauronsoftware.cron4j.Scheduler;
+
+import org.gcalendar.service.CalendarService;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.applet.AudioClip;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
+
+import javax.swing.*;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -37,6 +58,8 @@ import javafx.util.Duration;
  * @since 1.0
  */
 public class App extends Application {
+
+  private static final Logger logger = LoggerFactory.getLogger(App.class);
 
   private MenuBar topMenu;
   private Button showEventsBtn;
@@ -110,14 +133,103 @@ public class App extends Application {
     showEventsBtn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
+        try {
+          Calendar service = CalendarService.getCalendarService();
 
+          File file = new File("preferences.properties");
+          FileInputStream fileIn = new FileInputStream(file);
+          Properties properties = new Properties();
+          properties.load(fileIn);
+
+          String gCalendarId = properties.getProperty("googleCalendarId");
+
+          fileIn.close();
+
+          Events events = service.events().list(gCalendarId)
+              .setMaxResults(10)
+              .setTimeMin(new com.google.api.client.util.DateTime(System.currentTimeMillis()))
+              .setOrderBy("startTime")
+              .setSingleEvents(true)
+              .execute();
+
+          List<Event> items = events.getItems();
+          if (items.size() == 0) {
+            outputArea.setText("NO upcoming events found!");
+          } else {
+            outputArea.setText("Following upcoming events found: \n");
+            for (Event item : items) {
+
+              DateTime startTime = new DateTime(item.getStart().getDateTime().getValue());
+              if (startTime == null) {
+                startTime = new DateTime(item.getStart().getDate().getValue());
+              }
+
+              outputArea.appendText(
+                  "\t" + startTime.toString("dd/MM/yyyy HH:mm:ss") + " - " + item.getSummary()
+                  + "\n");
+            }
+          }
+        } catch (IOException io) {
+          logger.error("IOException: " + io.getMessage());
+        }
       }
     });
 
     startBtn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
+        outputArea.setText("Alarm procedure started. \n");
+        Scheduler scheduler = new Scheduler();
+        scheduler.schedule("* * * * *", new Runnable() {
+          @Override
+          public void run() {
+            try {
+              outputArea.setText("Alarm running... \n");
 
+              File file = new File("preferences.properties");
+              FileInputStream fileIn = new FileInputStream(file);
+              Properties properties = new Properties();
+              properties.load(fileIn);
+
+              DateTimeFormatter dtFmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+
+              Calendar service = CalendarService.getCalendarService();
+
+              String gCalendarId = properties.getProperty("googleCalendarId");
+
+              Events events = service.events().list(gCalendarId)
+                  .setMaxResults(10)
+                  .setTimeMin(new com.google.api.client.util.DateTime(System.currentTimeMillis()))
+                  .setOrderBy("startTime")
+                  .setSingleEvents(true)
+                  .execute();
+
+              List<Event> items = events.getItems();
+              outputArea.appendText("Wake up scheduled for:\n");
+              for (Event item : items) {
+                DateTime startTime = new DateTime(item.getStart().getDateTime().getValue());
+                outputArea.appendText(
+                    "\t" + startTime.toString("dd/MM/yyyy HH:mm:ss") + " - " + item.getSummary()
+                    + "\n");
+                if (startTime.toString(dtFmt).equals(new DateTime().toString(dtFmt))) {
+                  Thread thread = new Thread(alarm);
+                  thread.setDaemon(true);
+                  thread.start();
+                }
+              }
+            } catch (IOException io) {
+              logger.error("IOException: " + io.getMessage());
+              Alert alert = new Alert(Alert.AlertType.ERROR);
+              alert.setResizable(true);
+              alert.initOwner(root.getScene().getWindow());
+              alert.setTitle("ERROR!");
+              alert.setContentText("Something went wrong! Please contact the developer!");
+              alert.show();
+            }
+          }
+        });
+        scheduler.setDaemon(true);
+        scheduler.start();
       }
     });
 
@@ -138,7 +250,8 @@ public class App extends Application {
     preferencesMenu.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
-
+        Stage stage = new Preferences();
+        stage.show();
       }
     });
 
@@ -210,6 +323,35 @@ public class App extends Application {
       addEventBtn.setDisable(true);
     }
   }
+
+  Thread alarm = new Thread(new Runnable() {
+    @Override
+    public void run() {
+      try {
+        File file = new File("preferences.properties");
+        FileInputStream fileIn = new FileInputStream(file);
+        Properties properties = new Properties();
+        properties.load(fileIn);
+
+        String path = properties.getProperty("musicDirectory");
+
+        File dir = new File(path);
+        if (dir.isDirectory()) {
+          File[] files = dir.listFiles();
+          File selected = files[new Random().nextInt(files.length)];
+          String absolutePath = selected.toString();
+          String decodedPath = URLDecoder.decode(absolutePath, "UTF-8");
+          // TODO: Use Media and MediaPlayer instead but having problem to use this on linux platforms
+          // Missing codec/library on my system (Linux Manjaro-Arch-based-x64)
+          AudioClip ac = JApplet.newAudioClip(new URL("file://" + decodedPath));
+          ac.play();
+          logger.info("Playing: " + decodedPath);
+        }
+      } catch (IOException io) {
+        logger.error("IOException: " + io.getMessage());
+      }
+    }
+  });
 
   public static void main(String[] args) {
     launch(args);
