@@ -31,6 +31,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -43,7 +44,7 @@ public class EventAdder extends Stage {
 
   private static final Logger logger = LoggerFactory.getLogger(EventAdder.class);
 
-  private final TextField eventSummaryTxt = new TextField();
+  private TextField eventSummaryTxt;
   private DatePicker startDatePicker;
   private DatePicker endDatePicker;
 
@@ -52,8 +53,8 @@ public class EventAdder extends Stage {
   private Spinner<Integer> endTimeHourPicker;
   private Spinner<Integer> endTimeMinutePicker;
 
-  private final CheckBox repeatChkBx = new CheckBox("Repeat");
-  private final Button addEventBtn = new Button("Add event");
+  private CheckBox repeatChkBx;
+  private Button addEventBtn;
 
   public EventAdder() {
     setTitle("Add event to calendar");
@@ -67,6 +68,7 @@ public class EventAdder extends Stage {
     grid.setVgap(15);
     grid.setPadding(new Insets(15, 15, 15, 15));
 
+    eventSummaryTxt = new TextField();
     grid.add(eventSummaryTxt, 0, 1, 4, 1);
     eventSummaryTxt.setPromptText("Description or summary of the event");
 
@@ -92,9 +94,14 @@ public class EventAdder extends Stage {
     endTimeMinutePicker = new Spinner<Integer>(0, 60, 0);
     grid.add(endTimeMinutePicker, 3, 4);
 
+    repeatChkBx = new CheckBox("Repeat");
     grid.add(repeatChkBx, 0, 5);
 
-    grid.add(addEventBtn, 3, 6);
+    addEventBtn = new Button("Add event");
+    HBox hbBtn = new HBox(10);
+    hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+    hbBtn.getChildren().add(addEventBtn);
+    grid.add(hbBtn, 3, 6);
 
     VBox gridContainer = new VBox();
     gridContainer.getChildren().add(grid);
@@ -164,6 +171,22 @@ public class EventAdder extends Stage {
       event = service.events().insert(gCalendarId, event).execute();
 
       logger.info("Single event created with unique id: {} ", event.getId());
+
+      if (!event.isEmpty()) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setResizable(true);
+        alert.initOwner(this.getScene().getWindow());
+        alert.setTitle("Success!");
+        alert.setContentText("Your successfully added a single event to your calendar!");
+        alert.show();
+      } else {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setResizable(true);
+        alert.initOwner(this.getScene().getWindow());
+        alert.setTitle("ERROR!");
+        alert.setContentText("Something went wrong! Please contact the developer!");
+        alert.show();
+      }
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
     }
@@ -174,7 +197,7 @@ public class EventAdder extends Stage {
   }
 
   // output format: 2015-06-23T09:00:00+02:00
-  private String extractDateTime(LocalDate date, int hour, int minutes, String timeZone) {
+  private String extractDateTime(final LocalDate date, final int hour, final int minutes, final String timeZone) {
     org.joda.time.DateTime dt =
         new org.joda.time.DateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), hour,
                                    minutes, 0);

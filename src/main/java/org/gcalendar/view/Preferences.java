@@ -30,6 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
@@ -56,7 +57,7 @@ public class Preferences extends Stage {
 
   private void start() {
     GridPane grid = new GridPane();
-    grid.setAlignment(Pos.TOP_LEFT);
+    grid.setAlignment(Pos.CENTER);
     grid.setHgap(5);
     grid.setVgap(15);
     grid.setPadding(new Insets(15, 15, 15, 15));
@@ -86,7 +87,10 @@ public class Preferences extends Stage {
     grid.add(timeZoneChooser, 1, 4);
 
     Button saveBtn = new Button("Save");
-    grid.add(saveBtn, 1, 5);
+    HBox hbBtn = new HBox(10);
+    hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+    hbBtn.getChildren().add(saveBtn);
+    grid.add(hbBtn, 1, 5);
 
     VBox gridContainer = new VBox();
     gridContainer.getChildren().add(grid);

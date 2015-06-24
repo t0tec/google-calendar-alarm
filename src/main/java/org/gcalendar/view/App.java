@@ -76,7 +76,7 @@ public class App extends Application {
     primaryStage.setTitle("Google Calendar Alarm");
 
     GridPane currentDateGrid = new GridPane();
-    currentDateGrid.setAlignment(Pos.TOP_LEFT);
+    currentDateGrid.setAlignment(Pos.CENTER);
     currentDateGrid.setHgap(5);
     currentDateGrid.setVgap(5);
     currentDateGrid.setPadding(new Insets(25, 5, 5, 0));
