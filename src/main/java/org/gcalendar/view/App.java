@@ -134,8 +134,6 @@ public class App extends Application {
       @Override
       public void handle(ActionEvent event) {
         try {
-          Calendar service = CalendarService.getCalendarService();
-
           File file = new File("preferences.properties");
           FileInputStream fileIn = new FileInputStream(file);
           Properties properties = new Properties();
@@ -144,6 +142,8 @@ public class App extends Application {
           String gCalendarId = properties.getProperty("googleCalendarId");
 
           fileIn.close();
+
+          Calendar service = CalendarService.getCalendarService();
 
           Events events = service.events().list(gCalendarId)
               .setMaxResults(10)
@@ -230,6 +230,14 @@ public class App extends Application {
         });
         scheduler.setDaemon(true);
         scheduler.start();
+      }
+    });
+
+    addEventBtn.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent event) {
+        Stage stage = new EventAdder();
+        stage.show();
       }
     });
 
