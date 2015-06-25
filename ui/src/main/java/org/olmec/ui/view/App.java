@@ -1,15 +1,14 @@
 package org.olmec.ui.view;
 
-import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.Events;
 
 import it.sauronsoftware.cron4j.Scheduler;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.olmec.ui.service.CalendarService;
+import org.olmec.business.GoogleCalendar;
+import org.olmec.business.GoogleCalendarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +59,8 @@ import javafx.util.Duration;
 public class App extends Application {
 
   private static final Logger logger = LoggerFactory.getLogger(App.class);
+
+  private final GoogleCalendar gCalendarService = new GoogleCalendarService();
 
   private final EventAdder eventAdderWindow = new EventAdder();
   private final Preferences preferencesWindow = new Preferences();
@@ -146,16 +147,7 @@ public class App extends Application {
 
           fileIn.close();
 
-          Calendar service = CalendarService.getCalendarService();
-
-          Events events = service.events().list(gCalendarId)
-              .setMaxResults(10)
-              .setTimeMin(new com.google.api.client.util.DateTime(System.currentTimeMillis()))
-              .setOrderBy("startTime")
-              .setSingleEvents(true)
-              .execute();
-
-          List<Event> items = events.getItems();
+          List<Event> items = gCalendarService.getEvents(gCalendarId);
           if (items.size() == 0) {
             outputArea.setText("NO upcoming events found!");
           } else {
@@ -196,18 +188,9 @@ public class App extends Application {
 
               DateTimeFormatter dtFmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 
-              Calendar service = CalendarService.getCalendarService();
-
               String gCalendarId = properties.getProperty("googleCalendarId");
 
-              Events events = service.events().list(gCalendarId)
-                  .setMaxResults(10)
-                  .setTimeMin(new com.google.api.client.util.DateTime(System.currentTimeMillis()))
-                  .setOrderBy("startTime")
-                  .setSingleEvents(true)
-                  .execute();
-
-              List<Event> items = events.getItems();
+              List<Event> items = gCalendarService.getEvents(gCalendarId);
               outputArea.appendText("Wake up scheduled for:\n");
               for (Event item : items) {
                 DateTime startTime = new DateTime(item.getStart().getDateTime().getValue());
@@ -362,6 +345,7 @@ public class App extends Application {
           AudioClip ac = JApplet.newAudioClip(new URL("file://" + decodedPath));
           ac.play();
           logger.info("Playing: " + decodedPath);
+          outputArea.appendText("Playing: " + decodedPath);
         }
       } catch (IOException io) {
         logger.error("IOException: " + io.getMessage());

@@ -1,10 +1,9 @@
 package org.olmec.ui.view;
 
-import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.CalendarList;
-import com.google.api.services.calendar.model.CalendarListEntry;
+import com.google.api.services.calendar.model.Calendar;
 
-import org.olmec.ui.service.CalendarService;
+import org.olmec.business.GoogleCalendar;
+import org.olmec.business.GoogleCalendarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +44,8 @@ import javafx.stage.Stage;
 public class Preferences extends Stage {
 
   private static final Logger logger = LoggerFactory.getLogger(Preferences.class);
+
+  private final GoogleCalendar gCalendarService = new GoogleCalendarService();
 
   private final Text gCalendarIdTxt = new Text();
   private final TextField gCalendarNameTxtFld = new TextField();
@@ -237,31 +238,21 @@ public class Preferences extends Stage {
 
   private void createGoogleCalendar() {
     // Create a specific calendar for our application but checks first if one already exists.
-    try {
-      Calendar service = CalendarService.getCalendarService();
-      CalendarList calendarList = service.calendarList().list().execute();
+    boolean calendarExists = false;
 
-      boolean calendarExists = false;
-      for (CalendarListEntry calendarListEntry : calendarList.getItems()) {
-        if (calendarListEntry.getSummary().equals(gCalendarNameTxtFld.getText())) {
-          gCalendarIdTxt.setText(calendarListEntry.getId());
-          calendarExists = true;
-        }
-      }
+    if (gCalendarService.calendarExists(gCalendarNameTxtFld.getText())) {
+      calendarExists = true;
+    }
 
-      if (!calendarExists) {
-        com.google.api.services.calendar.model.Calendar calendar =
-            new com.google.api.services.calendar.model.Calendar();
-        calendar.setSummary(gCalendarNameTxtFld.getText());
-        calendar.setTimeZone(timeZoneChooser.getSelectionModel().getSelectedItem().toString());
-        calendar.setDescription("Use this calendar to alarm you from upcoming events!");
-        com.google.api.services.calendar.model.Calendar createdCalendar =
-            service.calendars().insert(calendar).execute();
+    if (!calendarExists) {
+      Calendar calendar = new Calendar();
+      calendar.setSummary(gCalendarNameTxtFld.getText());
+      calendar.setTimeZone(timeZoneChooser.getSelectionModel().getSelectedItem().toString());
+      calendar.setDescription("Use this calendar to alarm you for upcoming events!");
 
-        gCalendarIdTxt.setText(createdCalendar.getId());
-      }
-    } catch (IOException io) {
-      logger.error("IOException: " + io.getMessage());
+      Calendar createdCalendar = gCalendarService.createCalendar(calendar);
+
+      gCalendarIdTxt.setText(createdCalendar.getId());
     }
   }
 

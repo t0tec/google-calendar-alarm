@@ -1,12 +1,12 @@
 package org.olmec.ui.view;
 
 import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 
 import org.joda.time.DateTimeZone;
-import org.olmec.ui.service.CalendarService;
+import org.olmec.business.GoogleCalendar;
+import org.olmec.business.GoogleCalendarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +47,8 @@ import javafx.stage.WindowEvent;
 public class EventAdder extends Stage {
 
   private static final Logger logger = LoggerFactory.getLogger(EventAdder.class);
+
+  private final GoogleCalendar gCalendarService = new GoogleCalendarService();
 
   private Stage repeaterWindow = new RepeaterWindow();
 
@@ -195,10 +197,9 @@ public class EventAdder extends Stage {
 
       fileIn.close();
 
-      Calendar service = CalendarService.getCalendarService();
-      event = service.events().insert(gCalendarId, event).execute();
+      Event createdEvent = gCalendarService.createEvent(event, gCalendarId, false);
 
-      logger.info("Single event created with unique id: {} ", event.getId());
+      logger.info("Single event created with unique id: " + createdEvent.getId());
 
       if (!event.isEmpty()) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
