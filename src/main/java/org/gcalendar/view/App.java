@@ -61,6 +61,9 @@ public class App extends Application {
 
   private static final Logger logger = LoggerFactory.getLogger(App.class);
 
+  private final EventAdder eventAdderWindow = new EventAdder();
+  private final Preferences preferencesWindow = new Preferences();
+
   private MenuBar topMenu;
   private Button showEventsBtn;
   private Button startBtn;
@@ -236,8 +239,10 @@ public class App extends Application {
     addEventBtn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
-        Stage stage = new EventAdder();
-        stage.show();
+        if (!eventAdderWindow.isShowing()) {
+          eventAdderWindow.show();
+        }
+        eventAdderWindow.requestFocus();
       }
     });
 
@@ -258,8 +263,10 @@ public class App extends Application {
     preferencesMenu.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
-        Stage stage = new Preferences();
-        stage.show();
+        if (!preferencesWindow.isShowing()) {
+          preferencesWindow.show();
+        }
+        preferencesWindow.requestFocus();
       }
     });
 
@@ -287,6 +294,7 @@ public class App extends Application {
         Scene myDialogScene = new Scene(box);
 
         dialog.setTitle("About");
+        dialog.setResizable(false);
         dialog.setScene(myDialogScene);
         dialog.show();
       }

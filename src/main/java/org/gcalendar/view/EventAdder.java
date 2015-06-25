@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.Properties;
 import java.util.TimeZone;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -33,7 +35,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * @author t0tec (t0tec.olmec@gmail.com)
@@ -43,6 +47,8 @@ import javafx.stage.Stage;
 public class EventAdder extends Stage {
 
   private static final Logger logger = LoggerFactory.getLogger(EventAdder.class);
+
+  private Stage repeaterWindow = new RepeaterWindow();
 
   private TextField eventSummaryTxt;
   private DatePicker startDatePicker;
@@ -55,6 +61,7 @@ public class EventAdder extends Stage {
 
   private CheckBox repeatChkBx;
   private Button addEventBtn;
+  private Text summaryTxt;
 
   public EventAdder() {
     setTitle("Add event to calendar");
@@ -97,11 +104,15 @@ public class EventAdder extends Stage {
     repeatChkBx = new CheckBox("Repeat");
     grid.add(repeatChkBx, 0, 5);
 
+    grid.add(new Label("Summary: "), 0, 6);
+    summaryTxt = new Text();
+    grid.add(summaryTxt, 1, 6);
+
     addEventBtn = new Button("Add event");
     HBox hbBtn = new HBox(10);
     hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
     hbBtn.getChildren().add(addEventBtn);
-    grid.add(hbBtn, 3, 6);
+    grid.add(hbBtn, 3, 7);
 
     VBox gridContainer = new VBox();
     gridContainer.getChildren().add(grid);
@@ -109,7 +120,7 @@ public class EventAdder extends Stage {
     final BorderPane root = new BorderPane();
     root.setCenter(gridContainer);
     this.setResizable(false);
-    this.setScene(new Scene(root, 500, 250));
+    this.setScene(new Scene(root, 500, 350));
 
     addEventBtn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
@@ -129,6 +140,25 @@ public class EventAdder extends Stage {
         } else {
           // TODO: for recurring events
           createRecurringEvent();
+        }
+
+        close();
+      }
+    });
+
+    repeatChkBx.selectedProperty().addListener(new ChangeListener<Boolean>() {
+      @Override
+      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                          Boolean newValue) {
+        if (!repeaterWindow.isShowing() && !oldValue) {
+          repeaterWindow.show();
+          repeatChkBx.setDisable(true);
+          repeaterWindow.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+              repeatChkBx.setDisable(false);
+              repeatChkBx.setSelected(false);
+            }
+          });
         }
       }
     });
@@ -197,7 +227,8 @@ public class EventAdder extends Stage {
   }
 
   // output format: 2015-06-23T09:00:00+02:00
-  private String extractDateTime(final LocalDate date, final int hour, final int minutes, final String timeZone) {
+  private String extractDateTime(final LocalDate date, final int hour, final int minutes,
+                                 final String timeZone) {
     org.joda.time.DateTime dt =
         new org.joda.time.DateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), hour,
                                    minutes, 0);

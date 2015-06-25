@@ -173,6 +173,8 @@ public class Preferences extends Stage {
         };
 
         new Thread(task).start();
+
+        close();
       }
     });
   }
