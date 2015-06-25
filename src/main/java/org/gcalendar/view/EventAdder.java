@@ -141,8 +141,6 @@ public class EventAdder extends Stage {
           // TODO: for recurring events
           createRecurringEvent();
         }
-
-        close();
       }
     });
 

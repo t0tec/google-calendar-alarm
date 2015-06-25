@@ -18,6 +18,7 @@ import java.util.Properties;
 import java.util.TimeZone;
 
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -132,9 +133,10 @@ public class Preferences extends Stage {
           return;
         }
 
-        Task task = new Task<Void>() {
+        Task<Boolean> save = new Task<Boolean>() {
           @Override
-          public Void call() {
+          public Boolean call() {
+            Boolean result = false;
             try {
               createGoogleCalendar();
 
@@ -149,32 +151,46 @@ public class Preferences extends Stage {
               File file = new File("preferences.properties");
               FileOutputStream fileOut = new FileOutputStream(file);
               properties.store(fileOut, "Google Calendar Alarm preferences");
+              fileOut.close();
+              if (file.exists()) {
+                result = true;
+              }
             } catch (IOException io) {
               logger.error("IOException: " + io.getMessage());
-              Alert alert = new Alert(Alert.AlertType.ERROR);
-              alert.setResizable(true);
-              alert.initOwner(root.getScene().getWindow());
-              alert.setTitle("ERROR!");
-              alert.setContentText("Something went wrong! Please contact the developer!");
-              alert.show();
-            } finally {
-              if (new File("preferences.properties").exists()) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setResizable(true);
-                alert.initOwner(root.getScene().getWindow());
-                alert.setTitle("Success!");
-                alert.setContentText("Your preferences have been successfully saved! Be careful!"
-                                     + "When editing your preferences, new calendars can be created on your google account!");
-                alert.show();
-              }
+              result = false;
             }
-            return null;
+
+            return result;
           }
         };
 
-        new Thread(task).start();
+        save.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+          @Override
+          public void handle(WorkerStateEvent event) {
+            if (save.getValue()) {
+              Alert alert = new Alert(Alert.AlertType.INFORMATION);
+              alert.setResizable(true);
+              alert.initOwner(root.getScene().getWindow());
+              alert.setTitle("Success!");
+              alert.setContentText("Your preferences have been successfully saved! Be careful!"
+                                   + "When editing your preferences, new calendars can be created on your google account!");
+              alert.show();
+            }
+          }
+        });
 
-        close();
+        save.setOnFailed(new EventHandler<WorkerStateEvent>() {
+          @Override
+          public void handle(WorkerStateEvent event) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setResizable(true);
+            alert.initOwner(root.getScene().getWindow());
+            alert.setTitle("ERROR!");
+            alert.setContentText("Something went wrong! Please contact the developer!");
+            alert.show();
+          }
+        });
+        new Thread(save).start();
       }
     });
   }
