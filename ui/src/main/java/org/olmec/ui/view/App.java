@@ -1,4 +1,4 @@
-package org.gcalendar.view;
+package org.olmec.ui.view;
 
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
@@ -6,10 +6,10 @@ import com.google.api.services.calendar.model.Events;
 
 import it.sauronsoftware.cron4j.Scheduler;
 
-import org.gcalendar.service.CalendarService;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.olmec.ui.service.CalendarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

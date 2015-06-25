@@ -1,10 +1,10 @@
-package org.gcalendar.view;
+package org.olmec.ui.view;
 
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 
-import org.gcalendar.service.CalendarService;
+import org.olmec.ui.service.CalendarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

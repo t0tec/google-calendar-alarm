@@ -1,12 +1,12 @@
-package org.gcalendar.view;
+package org.olmec.ui.view;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 
-import org.gcalendar.service.CalendarService;
 import org.joda.time.DateTimeZone;
+import org.olmec.ui.service.CalendarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
