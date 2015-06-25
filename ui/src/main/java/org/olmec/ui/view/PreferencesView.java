@@ -41,9 +41,9 @@ import javafx.stage.Stage;
  * @version $Id$
  * @since 1.0
  */
-public class Preferences extends Stage {
+public class PreferencesView extends Stage {
 
-  private static final Logger logger = LoggerFactory.getLogger(Preferences.class);
+  private static final Logger logger = LoggerFactory.getLogger(PreferencesView.class);
 
   private final GoogleCalendar gCalendarService = new GoogleCalendarService();
 
@@ -52,7 +52,7 @@ public class Preferences extends Stage {
   private final TextField musicDirectoryTxtFld = new TextField();
   private final ComboBox timeZoneChooser = new ComboBox();
 
-  public Preferences() {
+  public PreferencesView() {
     setTitle("Application preferences");
     start();
   }
@@ -141,18 +141,18 @@ public class Preferences extends Stage {
             try {
               createGoogleCalendar();
 
-              Properties properties = new Properties();
-              properties.setProperty("googleCalendarId", gCalendarIdTxt.getText());
-              properties.setProperty("googleCalendarName", gCalendarNameTxtFld.getText());
-              properties.setProperty("musicDirectory", musicDirectoryTxtFld.getText());
-              properties.setProperty("timeZone",
-                                     timeZoneChooser.getSelectionModel().getSelectedItem()
-                                         .toString());
+              Properties preferences = new Properties();
+              preferences.setProperty("googleCalendarId", gCalendarIdTxt.getText());
+              preferences.setProperty("googleCalendarName", gCalendarNameTxtFld.getText());
+              preferences.setProperty("musicDirectory", musicDirectoryTxtFld.getText());
+              preferences.setProperty("timeZone",
+                                      timeZoneChooser.getSelectionModel().getSelectedItem()
+                                          .toString());
 
               File file = new File("preferences.properties");
-              FileOutputStream fileOut = new FileOutputStream(file);
-              properties.store(fileOut, "Google Calendar Alarm preferences");
-              fileOut.close();
+              FileOutputStream fileOutStream = new FileOutputStream(file);
+              preferences.store(fileOutStream, "Google Calendar Alarm preferences");
+              fileOutStream.close();
               if (file.exists()) {
                 result = true;
               }

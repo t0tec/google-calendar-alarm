@@ -7,14 +7,11 @@ import com.google.api.services.calendar.model.EventDateTime;
 import org.joda.time.DateTimeZone;
 import org.olmec.business.GoogleCalendar;
 import org.olmec.business.GoogleCalendarService;
+import org.olmec.ui.preferences.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Properties;
 import java.util.TimeZone;
 
 import javafx.beans.value.ChangeListener;
@@ -44,13 +41,13 @@ import javafx.stage.WindowEvent;
  * @version $Id$
  * @since 1.0
  */
-public class EventAdder extends Stage {
+public class EventAdderView extends Stage {
 
-  private static final Logger logger = LoggerFactory.getLogger(EventAdder.class);
+  private static final Logger logger = LoggerFactory.getLogger(EventAdderView.class);
 
   private final GoogleCalendar gCalendarService = new GoogleCalendarService();
 
-  private Stage repeaterWindow = new RepeaterWindow();
+  private Stage repeaterWindow = new RepeatView();
 
   private TextField eventSummaryTxt;
   private DatePicker startDatePicker;
@@ -65,7 +62,7 @@ public class EventAdder extends Stage {
   private Button addEventBtn;
   private Text summaryTxt;
 
-  public EventAdder() {
+  public EventAdderView() {
     setTitle("Add event to calendar");
     start();
   }
@@ -167,57 +164,46 @@ public class EventAdder extends Stage {
   private void createSingleEvent() {
     Event event = new Event().setSummary(eventSummaryTxt.getText());
 
-    try {
-      File file = new File("preferences.properties");
-      FileInputStream fileIn = new FileInputStream(file);
-      Properties properties = new Properties();
-      properties.load(fileIn);
+    DateTime startDateTime =
+        new DateTime(extractDateTime(startDatePicker.getValue(), startTimeHourPicker.getValue(),
+                                     startTimeMinutePicker.getValue(),
+                                     Preferences.getInstance().getValue("timeZone")));
 
-      DateTime startDateTime =
-          new DateTime(extractDateTime(startDatePicker.getValue(), startTimeHourPicker.getValue(),
-                                       startTimeMinutePicker.getValue(),
-                                       properties.getProperty("timeZone")));
+    DateTime endDateTime =
+        new DateTime(extractDateTime(endDatePicker.getValue(), endTimeHourPicker.getValue(),
+                                     endTimeMinutePicker.getValue(),
+                                     Preferences.getInstance().getValue("timeZone")));
 
-      DateTime endDateTime =
-          new DateTime(extractDateTime(endDatePicker.getValue(), endTimeHourPicker.getValue(),
-                                       endTimeMinutePicker.getValue(),
-                                       properties.getProperty("timeZone")));
+    EventDateTime start = new EventDateTime()
+        .setDateTime(startDateTime)
+        .setTimeZone(Preferences.getInstance().getValue("timeZone"));
+    event.setStart(start);
 
-      EventDateTime start = new EventDateTime()
-          .setDateTime(startDateTime)
-          .setTimeZone(properties.getProperty("timeZone"));
-      event.setStart(start);
+    EventDateTime end = new EventDateTime()
+        .setDateTime(endDateTime)
+        .setTimeZone(Preferences.getInstance().getValue("timeZone"));
+    event.setEnd(end);
 
-      EventDateTime end = new EventDateTime()
-          .setDateTime(endDateTime)
-          .setTimeZone(properties.getProperty("timeZone"));
-      event.setEnd(end);
+    String gCalendarId = Preferences.getInstance().getValue("googleCalendarId");
 
-      String gCalendarId = properties.getProperty("googleCalendarId");
+    Event createdEvent = gCalendarService.createEvent(event, gCalendarId, false);
 
-      fileIn.close();
+    logger.info("Single event created with unique id: " + createdEvent.getId());
 
-      Event createdEvent = gCalendarService.createEvent(event, gCalendarId, false);
-
-      logger.info("Single event created with unique id: " + createdEvent.getId());
-
-      if (!event.isEmpty()) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setResizable(true);
-        alert.initOwner(this.getScene().getWindow());
-        alert.setTitle("Success!");
-        alert.setContentText("Your successfully added a single event to your calendar!");
-        alert.show();
-      } else {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setResizable(true);
-        alert.initOwner(this.getScene().getWindow());
-        alert.setTitle("ERROR!");
-        alert.setContentText("Something went wrong! Please contact the developer!");
-        alert.show();
-      }
-    } catch (IOException io) {
-      logger.error("IOException: " + io.getMessage());
+    if (!event.isEmpty()) {
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setResizable(true);
+      alert.initOwner(this.getScene().getWindow());
+      alert.setTitle("Success!");
+      alert.setContentText("Your successfully added a single event to your calendar!");
+      alert.show();
+    } else {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setResizable(true);
+      alert.initOwner(this.getScene().getWindow());
+      alert.setTitle("ERROR!");
+      alert.setContentText("Something went wrong! Please contact the developer!");
+      alert.show();
     }
   }
 

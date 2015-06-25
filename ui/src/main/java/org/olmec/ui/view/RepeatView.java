@@ -23,9 +23,9 @@ import javafx.stage.Stage;
  * @version $Id$
  * @since 1.0
  */
-public class RepeaterWindow extends Stage {
+public class RepeatView extends Stage {
 
-  private static final Logger logger = LoggerFactory.getLogger(RepeaterWindow.class);
+  private static final Logger logger = LoggerFactory.getLogger(RepeatView.class);
 
   private CheckBox chkBxMon = new CheckBox("Mon");
   private CheckBox chkBxTue = new CheckBox("Tue");
@@ -38,7 +38,7 @@ public class RepeaterWindow extends Stage {
   private DatePicker startDatePicket = new DatePicker(LocalDate.now());
   private DatePicker endsDatePicker = new DatePicker(LocalDate.now().plusWeeks(1));
 
-  public RepeaterWindow() {
+  public RepeatView() {
     setTitle("Repeat event");
     start();
   }

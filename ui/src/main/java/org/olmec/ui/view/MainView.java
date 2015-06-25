@@ -9,17 +9,16 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.olmec.business.GoogleCalendar;
 import org.olmec.business.GoogleCalendarService;
+import org.olmec.ui.preferences.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.applet.AudioClip;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
-import java.util.Properties;
 import java.util.Random;
 
 import javax.swing.*;
@@ -56,14 +55,14 @@ import javafx.util.Duration;
  * @version $Id$
  * @since 1.0
  */
-public class App extends Application {
+public class MainView extends Application {
 
-  private static final Logger logger = LoggerFactory.getLogger(App.class);
+  private static final Logger logger = LoggerFactory.getLogger(MainView.class);
 
   private final GoogleCalendar gCalendarService = new GoogleCalendarService();
 
-  private final EventAdder eventAdderWindow = new EventAdder();
-  private final Preferences preferencesWindow = new Preferences();
+  private final EventAdderView eventAdderview = new EventAdderView();
+  private final PreferencesView preferencesView = new PreferencesView();
 
   private MenuBar topMenu;
   private Button showEventsBtn;
@@ -72,8 +71,6 @@ public class App extends Application {
 
   private TextArea outputArea;
   private Label clockDateLbl;
-
-  private File preferences = new File("preferences.properties");
 
   @Override
   public void start(final Stage primaryStage) throws Exception {
@@ -137,35 +134,24 @@ public class App extends Application {
     showEventsBtn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
-        try {
-          File file = new File("preferences.properties");
-          FileInputStream fileIn = new FileInputStream(file);
-          Properties properties = new Properties();
-          properties.load(fileIn);
+        String gCalendarId = Preferences.getInstance().getValue("googleCalendarId");
 
-          String gCalendarId = properties.getProperty("googleCalendarId");
+        List<Event> items = gCalendarService.getEvents(gCalendarId);
+        if (items.size() == 0) {
+          outputArea.setText("NO upcoming events found!");
+        } else {
+          outputArea.setText("Following upcoming events found: \n");
+          for (Event item : items) {
 
-          fileIn.close();
-
-          List<Event> items = gCalendarService.getEvents(gCalendarId);
-          if (items.size() == 0) {
-            outputArea.setText("NO upcoming events found!");
-          } else {
-            outputArea.setText("Following upcoming events found: \n");
-            for (Event item : items) {
-
-              DateTime startTime = new DateTime(item.getStart().getDateTime().getValue());
-              if (startTime == null) {
-                startTime = new DateTime(item.getStart().getDate().getValue());
-              }
-
-              outputArea.appendText(
-                  "\t" + startTime.toString("dd/MM/yyyy HH:mm:ss") + " - " + item.getSummary()
-                  + "\n");
+            DateTime startTime = new DateTime(item.getStart().getDateTime().getValue());
+            if (startTime == null) {
+              startTime = new DateTime(item.getStart().getDate().getValue());
             }
+
+            outputArea.appendText(
+                "\t" + startTime.toString("dd/MM/yyyy HH:mm:ss") + " - " + item.getSummary()
+                + "\n");
           }
-        } catch (IOException io) {
-          logger.error("IOException: " + io.getMessage());
         }
       }
     });
@@ -178,40 +164,31 @@ public class App extends Application {
         scheduler.schedule("* * * * *", new Runnable() {
           @Override
           public void run() {
-            try {
-              outputArea.setText("Alarm running... \n");
+            outputArea.setText("Alarm running... \n");
 
-              File file = new File("preferences.properties");
-              FileInputStream fileIn = new FileInputStream(file);
-              Properties properties = new Properties();
-              properties.load(fileIn);
+            DateTimeFormatter dtFmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 
-              DateTimeFormatter dtFmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+            String gCalendarId = Preferences.getInstance().getValue("googleCalendarId");
 
-              String gCalendarId = properties.getProperty("googleCalendarId");
-
-              List<Event> items = gCalendarService.getEvents(gCalendarId);
-              outputArea.appendText("Wake up scheduled for:\n");
-              for (Event item : items) {
-                DateTime startTime = new DateTime(item.getStart().getDateTime().getValue());
-                outputArea.appendText(
-                    "\t" + startTime.toString("dd/MM/yyyy HH:mm:ss") + " - " + item.getSummary()
-                    + "\n");
-                if (startTime.toString(dtFmt).equals(new DateTime().toString(dtFmt))) {
-                  Thread thread = new Thread(alarm);
-                  thread.setDaemon(true);
-                  thread.start();
-                }
+            List<Event> items = gCalendarService.getEvents(gCalendarId);
+            outputArea.appendText("Wake up scheduled for:\n");
+            for (Event item : items) {
+              DateTime startTime = new DateTime(item.getStart().getDateTime().getValue());
+              outputArea.appendText(
+                  "\t" + startTime.toString("dd/MM/yyyy HH:mm:ss") + " - " + item.getSummary()
+                  + "\n");
+              if (startTime.toString(dtFmt).equals(new DateTime().toString(dtFmt))) {
+                Thread thread = new Thread(alarm);
+                thread.setDaemon(true);
+                thread.start();
               }
-            } catch (IOException io) {
-              logger.error("IOException: " + io.getMessage());
-              Alert alert = new Alert(Alert.AlertType.ERROR);
-              alert.setResizable(true);
-              alert.initOwner(root.getScene().getWindow());
-              alert.setTitle("ERROR!");
-              alert.setContentText("Something went wrong! Please contact the developer!");
-              alert.show();
             }
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setResizable(true);
+            alert.initOwner(root.getScene().getWindow());
+            alert.setTitle("ERROR!");
+            alert.setContentText("Something went wrong! Please contact the developer!");
+            alert.show();
           }
         });
         scheduler.setDaemon(true);
@@ -222,10 +199,10 @@ public class App extends Application {
     addEventBtn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
-        if (!eventAdderWindow.isShowing()) {
-          eventAdderWindow.show();
+        if (!eventAdderview.isShowing()) {
+          eventAdderview.show();
         }
-        eventAdderWindow.requestFocus();
+        eventAdderview.requestFocus();
       }
     });
 
@@ -246,10 +223,10 @@ public class App extends Application {
     preferencesMenu.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
-        if (!preferencesWindow.isShowing()) {
-          preferencesWindow.show();
+        if (!preferencesView.isShowing()) {
+          preferencesView.show();
         }
-        preferencesWindow.requestFocus();
+        preferencesView.requestFocus();
       }
     });
 
@@ -309,7 +286,7 @@ public class App extends Application {
   }
 
   private void checkPreferenceFileExists(final Stage stage) {
-    if (!preferences.exists()) {
+    if (!Preferences.getInstance().exists()) {
       Alert alert = new Alert(Alert.AlertType.WARNING);
       alert.setResizable(true);
       alert.initOwner(stage);
@@ -327,12 +304,7 @@ public class App extends Application {
     @Override
     public void run() {
       try {
-        File file = new File("preferences.properties");
-        FileInputStream fileIn = new FileInputStream(file);
-        Properties properties = new Properties();
-        properties.load(fileIn);
-
-        String path = properties.getProperty("musicDirectory");
+        String path = Preferences.getInstance().getValue("musicDirectory");
 
         File dir = new File(path);
         if (dir.isDirectory()) {
