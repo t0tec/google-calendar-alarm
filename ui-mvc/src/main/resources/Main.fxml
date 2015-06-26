@@ -11,13 +11,13 @@
         <menus>
           <Menu id="mainMenu" fx:id="mainMenu" mnemonicParsing="false" text="Main">
             <items>
-              <MenuItem id="preferencesMenuItem" fx:id="preferencesMenuItem" mnemonicParsing="false" text="Preferences" />
-                  <MenuItem id="exitMenuItem" fx:id="exitMenuItem" mnemonicParsing="false" text="Exit" />
+              <MenuItem id="preferencesMenuItem" fx:id="preferencesMenuItem" onAction="#preferencesMenuPressed" mnemonicParsing="false" text="Preferences" />
+                  <MenuItem id="exitMenuItem" fx:id="exitMenuItem" onAction="#exitMenuPressed" mnemonicParsing="false" text="Exit" />
             </items>
           </Menu>
           <Menu id="helpMenu" fx:id="helpMenu" mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem id="aboutMenuItem" fx:id="aboutMenuItem" mnemonicParsing="false" text="About" />
+              <MenuItem id="aboutMenuItem" fx:id="aboutMenuItem" onAction="#aboutMenuPressed" mnemonicParsing="false" text="About" />
             </items>
           </Menu>
         </menus>
@@ -44,7 +44,7 @@
                                     <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                                  </padding>
                                  <children>
-                                    <Button id="showEventsBtn" fx:id="showEventsBtn" mnemonicParsing="false" prefHeight="36.0" prefWidth="147.0" text="Show events" />
+                                    <Button id="showEventsBtn" fx:id="showEventsBtn" onAction="#showEventsBtnPressed" mnemonicParsing="false" prefHeight="36.0" prefWidth="147.0" text="Show events" />
                                     <Button id="startAlarmClockBtn" fx:id="startAlarmClockBtn" mnemonicParsing="false" prefHeight="49.0" prefWidth="133.0" text="Start alarm clock" GridPane.rowIndex="1" />
                                     <Button id="addEventBtn" fx:id="addEventBtn" mnemonicParsing="false" prefHeight="36.0" prefWidth="148.0" text="Add event" GridPane.rowIndex="2" />
                                     <Button id="editEventBtn" fx:id="editEventBtn" mnemonicParsing="false" prefHeight="44.0" prefWidth="133.0" text="Edit event" GridPane.rowIndex="3" />

@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  * @version $Id$
  * @since 1.0
  */
-public class App extends Application {
+public class AppMVC extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {

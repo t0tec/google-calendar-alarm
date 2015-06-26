@@ -8,6 +8,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * @author t0tec (t0tec.olmec@gmail.com)
+ * @version $Id$
+ * @since 1.0
+ */
 public class Preferences {
 
   private static final Logger logger = LoggerFactory.getLogger(Preferences.class);
