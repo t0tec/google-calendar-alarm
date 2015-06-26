@@ -19,6 +19,7 @@
     <modules>
         <module>business</module>
         <module>ui</module>
+        <module>ui-mvc</module>
     </modules>
 
     <properties>
