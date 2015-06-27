@@ -77,6 +77,7 @@ public class MainView extends AnchorPane {
   private final Model model;
 
   private final Scheduler scheduler;
+  private String scheduleId;
 
   private Consumer<String> showEventsBtnObserver;
 
@@ -177,7 +178,8 @@ public class MainView extends AnchorPane {
       dialog.setScene(myDialogScene);
       dialog.show();
 
-      scheduler.schedule("* * * * *", new Runnable() {
+
+      scheduleId = scheduler.schedule("* * * * *", new Runnable() {
         @Override
         public void run() {
           logger.info("Alarm scheduler is running...");
@@ -232,11 +234,16 @@ public class MainView extends AnchorPane {
           }
         }
       });
-      scheduler.setDaemon(true);
-      scheduler.start();
+
+      if (!scheduler.isStarted()) {
+        scheduler.setDaemon(true);
+        scheduler.start();
+      }
+
       toggleAlarmBtn.setText("Stop alarm clock");
     } else {
       scheduler.stop();
+      scheduler.deschedule(scheduleId);
       toggleAlarmBtn.setText("Start alarm clock");
       logger.info("Scheduler has stopped!");
       final Stage dialog = new Stage();
