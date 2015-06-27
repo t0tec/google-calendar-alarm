@@ -183,12 +183,6 @@ public class MainView extends Application {
                 thread.start();
               }
             }
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setResizable(true);
-            alert.initOwner(root.getScene().getWindow());
-            alert.setTitle("ERROR!");
-            alert.setContentText("Something went wrong! Please contact the developer!");
-            alert.show();
           }
         });
         scheduler.setDaemon(true);

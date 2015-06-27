@@ -7,8 +7,11 @@ import org.olmec.ui_mvc.controller.MainController;
 import org.olmec.ui_mvc.view.MainView;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * @author t0tec (t0tec.olmec@gmail.com)
@@ -32,6 +35,13 @@ public class AppMVC extends Application {
     primaryStage.setResizable(false);
     primaryStage.setScene(new Scene(view));
     primaryStage.show();
+
+    primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+      @Override
+      public void handle(WindowEvent event) {
+        Platform.exit();
+      }
+    });
   }
 
   public static void main(String[] args) {

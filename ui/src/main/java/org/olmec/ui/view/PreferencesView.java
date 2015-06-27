@@ -82,7 +82,7 @@ public class PreferencesView extends Stage {
     Button browseDirectoryBtn = new Button("Browse");
     grid.add(browseDirectoryBtn, 2, 3);
 
-    Label timeZoneLbl = new Label("Select your timezone:");
+    Label timeZoneLbl = new Label("Select your time zone:");
     grid.add(timeZoneLbl, 0, 4);
 
     timeZoneChooser.getItems().addAll(getTimeZones());

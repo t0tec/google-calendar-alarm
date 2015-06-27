@@ -9,6 +9,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Calendar;
@@ -19,6 +20,7 @@ import com.google.api.services.calendar.model.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,7 +46,7 @@ public class GoogleCalendarService implements GoogleCalendar {
   /**
    * Directory to store user credentials.
    */
-  private static final java.io.File DATA_STORE_DIR = new java.io.File(
+  private static final File DATA_STORE_DIR = new File(
       System.getProperty("user.home"), ".credentials/google-calendar-alarm");
 
   /**
@@ -159,7 +161,7 @@ public class GoogleCalendarService implements GoogleCalendar {
     try {
       events = getCalendarService().events().list(calendarId)
           .setMaxResults(10)
-          .setTimeMin(new com.google.api.client.util.DateTime(System.currentTimeMillis()))
+          .setTimeMin(new DateTime(System.currentTimeMillis()))
           .setOrderBy("startTime")
           .setSingleEvents(true)
           .execute()
@@ -177,7 +179,6 @@ public class GoogleCalendarService implements GoogleCalendar {
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
     }
-
     return createdEvent;
   }
 }
