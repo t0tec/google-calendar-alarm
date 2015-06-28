@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 
 import org.olmec.business.GoogleCalendar;
 import org.olmec.ui_mvc.model.PreferencesModel;
-import org.olmec.ui_mvc.preferences.Preferences;
+import org.olmec.ui_mvc.Preferences;
 import org.olmec.ui_mvc.view.PreferencesView;
 
 import java.io.File;

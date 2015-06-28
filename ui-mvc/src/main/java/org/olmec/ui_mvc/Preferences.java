@@ -1,4 +1,4 @@
-package org.olmec.ui_mvc.preferences;
+package org.olmec.ui_mvc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

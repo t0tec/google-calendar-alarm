@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.olmec.business.GoogleCalendar;
-import org.olmec.ui_mvc.model.MainModel;
-import org.olmec.ui_mvc.view.MainView;
+import org.olmec.ui_mvc.model.OverviewModel;
+import org.olmec.ui_mvc.view.Overview;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -17,15 +17,15 @@ import java.util.function.Consumer;
  * @since 1.0
  */
 @Singleton
-public class MainController {
+public class OverviewController {
 
-  private final MainModel model;
-  private final MainView view;
+  private final OverviewModel model;
+  private final Overview view;
 
   private GoogleCalendar googleCalendar;
 
   @Inject
-  public MainController(MainModel model, MainView view, GoogleCalendar googleCalendar) {
+  public OverviewController(OverviewModel model, Overview view, GoogleCalendar googleCalendar) {
     this.model = model;
     this.view = view;
     this.googleCalendar = googleCalendar;
@@ -39,7 +39,7 @@ public class MainController {
     });
   }
 
-  public MainView getView() {
+  public Overview getView() {
     return view;
   }
 }

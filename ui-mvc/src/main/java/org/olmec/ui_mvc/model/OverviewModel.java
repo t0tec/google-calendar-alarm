@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * @since 1.0
  */
 @Singleton
-public class MainModel {
+public class OverviewModel {
 
   private List<Event> events = new ArrayList<>();
 

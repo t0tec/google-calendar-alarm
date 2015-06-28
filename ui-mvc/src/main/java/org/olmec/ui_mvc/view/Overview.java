@@ -10,8 +10,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.olmec.ui_mvc.Alarm;
-import org.olmec.ui_mvc.model.MainModel;
-import org.olmec.ui_mvc.preferences.Preferences;
+import org.olmec.ui_mvc.model.OverviewModel;
+import org.olmec.ui_mvc.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +52,9 @@ import javafx.util.Duration;
  * @since 1.0
  */
 @Singleton
-public class MainView extends AnchorPane {
+public class Overview extends AnchorPane {
 
-  private static final Logger logger = LoggerFactory.getLogger(MainView.class);
+  private static final Logger logger = LoggerFactory.getLogger(Overview.class);
 
   @FXML
   private Button showEventsBtn;
@@ -74,7 +74,7 @@ public class MainView extends AnchorPane {
   @FXML
   private ListView<String> eventList;
 
-  private final MainModel model;
+  private final OverviewModel model;
 
   private final Scheduler scheduler;
   private String scheduleId;
@@ -82,7 +82,7 @@ public class MainView extends AnchorPane {
   private Consumer<String> showEventsBtnObserver;
 
   @Inject
-  public MainView(MainModel model) {
+  public Overview(OverviewModel model) {
     this.model = model;
     this.scheduler = new Scheduler();
 
@@ -262,7 +262,7 @@ public class MainView extends AnchorPane {
 
   private void load() {
     FXMLLoader fxmlLoader = new FXMLLoader();
-    fxmlLoader.setLocation(this.getClass().getResource("/Main.fxml"));
+    fxmlLoader.setLocation(this.getClass().getResource("/Overview.fxml"));
     fxmlLoader.setController(this);
     fxmlLoader.setRoot(this);
 

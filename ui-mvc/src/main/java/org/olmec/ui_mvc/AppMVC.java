@@ -3,8 +3,8 @@ package org.olmec.ui_mvc;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import org.olmec.ui_mvc.controller.MainController;
-import org.olmec.ui_mvc.view.MainView;
+import org.olmec.ui_mvc.controller.OverviewController;
+import org.olmec.ui_mvc.view.Overview;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -25,9 +25,9 @@ public class AppMVC extends Application {
 
     Injector injector = Guice.createInjector(new ServiceModule());
 
-    final MainController mainController = injector.getInstance(MainController.class);
+    final OverviewController overviewController = injector.getInstance(OverviewController.class);
 
-    final MainView mainView = mainController.getView();
+    final Overview overview = overviewController.getView();
 
 //    final PreferencesController preferencesController = injector.getInstance(
 //        PreferencesController.class);
@@ -38,7 +38,7 @@ public class AppMVC extends Application {
     primaryStage.setWidth(600);
     primaryStage.setHeight(400);
     primaryStage.setResizable(false);
-    primaryStage.setScene(new Scene(mainView));
+    primaryStage.setScene(new Scene(overview));
     primaryStage.show();
 
     primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
