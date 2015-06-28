@@ -39,6 +39,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -61,12 +62,15 @@ public class MainView extends Application {
 
   private final GoogleCalendar gCalendarService = new GoogleCalendarService();
 
+  private final Scheduler scheduler = new Scheduler();
+  private String scheduleId;
+
   private final EventAdderView eventAdderview = new EventAdderView();
   private final PreferencesView preferencesView = new PreferencesView();
 
   private MenuBar topMenu;
   private Button showEventsBtn;
-  private Button startBtn;
+  private ToggleButton startToggleBtn;
   private Button addEventBtn;
 
   private TextArea outputArea;
@@ -97,9 +101,9 @@ public class MainView extends Application {
     showEventsBtn.setPrefWidth(150);
     grid.add(showEventsBtn, 0, 0);
 
-    startBtn = new Button("Start alarm clock");
-    startBtn.setPrefWidth(150);
-    grid.add(startBtn, 0, 1);
+    startToggleBtn = new ToggleButton("Start alarm clock");
+    startToggleBtn.setPrefWidth(150);
+    grid.add(startToggleBtn, 0, 1);
 
     addEventBtn = new Button("Add event");
     addEventBtn.setPrefWidth(150);
@@ -156,37 +160,48 @@ public class MainView extends Application {
       }
     });
 
-    startBtn.setOnAction(new EventHandler<ActionEvent>() {
+
+    startToggleBtn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent event) {
-        outputArea.setText("Alarm procedure started. \n");
-        Scheduler scheduler = new Scheduler();
-        scheduler.schedule("* * * * *", new Runnable() {
-          @Override
-          public void run() {
-            outputArea.setText("Alarm running... \n");
+        if (startToggleBtn.isSelected()) {
+          outputArea.setText("Alarm procedure started. \n");
+          Scheduler scheduler = new Scheduler();
+          scheduleId = scheduler.schedule("* * * * *", new Runnable() {
+            @Override
+            public void run() {
+              outputArea.setText("Alarm running... \n");
 
-            DateTimeFormatter dtFmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+              DateTimeFormatter dtFmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 
-            String gCalendarId = Preferences.getInstance().getValue("googleCalendarId");
+              String gCalendarId = Preferences.getInstance().getValue("googleCalendarId");
 
-            List<Event> items = gCalendarService.getEvents(gCalendarId);
-            outputArea.appendText("Wake up scheduled for:\n");
-            for (Event item : items) {
-              DateTime startTime = new DateTime(item.getStart().getDateTime().getValue());
-              outputArea.appendText(
-                  "\t" + startTime.toString("dd/MM/yyyy HH:mm:ss") + " - " + item.getSummary()
-                  + "\n");
-              if (startTime.toString(dtFmt).equals(new DateTime().toString(dtFmt))) {
-                Thread thread = new Thread(alarm);
-                thread.setDaemon(true);
-                thread.start();
+              List<Event> items = gCalendarService.getEvents(gCalendarId);
+              outputArea.appendText("Wake up scheduled for:\n");
+              for (Event item : items) {
+                DateTime startTime = new DateTime(item.getStart().getDateTime().getValue());
+                outputArea.appendText(
+                    "\t" + startTime.toString("dd/MM/yyyy HH:mm:ss") + " - " + item.getSummary()
+                    + "\n");
+                if (startTime.toString(dtFmt).equals(new DateTime().toString(dtFmt))) {
+                  Thread thread = new Thread(alarm);
+                  thread.setDaemon(true);
+                  thread.start();
+                }
               }
             }
+          });
+          scheduler.setDaemon(true);
+          scheduler.start();
+          startToggleBtn.setText("Stop alarm clock");
+        } else {
+          if (scheduler.isStarted()) {
+            scheduler.stop();
+            scheduler.deschedule(scheduleId);
           }
-        });
-        scheduler.setDaemon(true);
-        scheduler.start();
+          startToggleBtn.setText("Start alarm clock");
+          outputArea.setText("Alarm procedure stopped. \n");
+        }
       }
     });
 
@@ -289,7 +304,7 @@ public class MainView extends Application {
       alert.show();
 
       showEventsBtn.setDisable(true);
-      startBtn.setDisable(true);
+      startToggleBtn.setDisable(true);
       addEventBtn.setDisable(true);
     }
   }

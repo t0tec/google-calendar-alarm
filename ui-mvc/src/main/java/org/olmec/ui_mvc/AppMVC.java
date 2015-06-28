@@ -27,13 +27,18 @@ public class AppMVC extends Application {
 
     final MainController mainController = injector.getInstance(MainController.class);
 
-    final MainView view = mainController.getView();
+    final MainView mainView = mainController.getView();
+
+//    final PreferencesController preferencesController = injector.getInstance(
+//        PreferencesController.class);
+//
+//    final PreferencesView preferencesView = preferencesController.getView();
 
     primaryStage.setTitle("Google Calendar Alarm MVC");
     primaryStage.setWidth(600);
     primaryStage.setHeight(400);
     primaryStage.setResizable(false);
-    primaryStage.setScene(new Scene(view));
+    primaryStage.setScene(new Scene(mainView));
     primaryStage.show();
 
     primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

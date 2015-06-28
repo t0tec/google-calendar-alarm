@@ -5,7 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.olmec.business.GoogleCalendar;
-import org.olmec.ui_mvc.model.Model;
+import org.olmec.ui_mvc.model.MainModel;
 import org.olmec.ui_mvc.view.MainView;
 
 import java.util.List;
@@ -19,13 +19,13 @@ import java.util.function.Consumer;
 @Singleton
 public class MainController {
 
-  private final Model model;
+  private final MainModel model;
   private final MainView view;
 
   private GoogleCalendar googleCalendar;
 
   @Inject
-  public MainController(Model model, MainView view, GoogleCalendar googleCalendar) {
+  public MainController(MainModel model, MainView view, GoogleCalendar googleCalendar) {
     this.model = model;
     this.view = view;
     this.googleCalendar = googleCalendar;

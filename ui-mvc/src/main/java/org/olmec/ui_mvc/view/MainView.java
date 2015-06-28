@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.olmec.ui_mvc.Alarm;
-import org.olmec.ui_mvc.model.Model;
+import org.olmec.ui_mvc.model.MainModel;
 import org.olmec.ui_mvc.preferences.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +74,7 @@ public class MainView extends AnchorPane {
   @FXML
   private ListView<String> eventList;
 
-  private final Model model;
+  private final MainModel model;
 
   private final Scheduler scheduler;
   private String scheduleId;
@@ -82,7 +82,7 @@ public class MainView extends AnchorPane {
   private Consumer<String> showEventsBtnObserver;
 
   @Inject
-  public MainView(Model model) {
+  public MainView(MainModel model) {
     this.model = model;
     this.scheduler = new Scheduler();
 
@@ -92,7 +92,7 @@ public class MainView extends AnchorPane {
         eventList.getItems().clear();
 
         final ObservableList<String> listEvents = FXCollections.observableArrayList();
-        for (Event event: model.getEvents()) {
+        for (Event event : model.getEvents()) {
           DateTime startTime = new DateTime(event.getStart().getDateTime().getValue());
           DateTime endTime = new DateTime(event.getEnd().getDateTime().getValue());
           listEvents.add(
@@ -127,7 +127,7 @@ public class MainView extends AnchorPane {
 
 
   public void preferencesMenuPressed() {
-    // show preferences view
+
   }
 
   public void exitMenuPressed() {
@@ -178,11 +178,10 @@ public class MainView extends AnchorPane {
       dialog.setScene(myDialogScene);
       dialog.show();
 
-
+      logger.info("Alarm scheduler is about to run...");
       scheduleId = scheduler.schedule("* * * * *", new Runnable() {
         @Override
         public void run() {
-          logger.info("Alarm scheduler is running...");
 
           DateTimeFormatter dtFmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 
@@ -235,11 +234,8 @@ public class MainView extends AnchorPane {
         }
       });
 
-      if (!scheduler.isStarted()) {
-        scheduler.setDaemon(true);
-        scheduler.start();
-      }
-
+      scheduler.setDaemon(true);
+      scheduler.start();
       toggleAlarmBtn.setText("Stop alarm clock");
     } else {
       scheduler.stop();
@@ -253,7 +249,8 @@ public class MainView extends AnchorPane {
       VBox box = new VBox();
       box.setAlignment(Pos.TOP_LEFT);
       box.setPadding(new Insets(10));
-      box.getChildren().addAll(new Text("A scheduler has stopped to alert you for upcoming events"));
+      box.getChildren()
+          .addAll(new Text("A scheduler has stopped to alert you for upcoming events"));
       Scene myDialogScene = new Scene(box);
 
       dialog.setTitle("Stopped alarm scheduler!");
@@ -261,7 +258,6 @@ public class MainView extends AnchorPane {
       dialog.setScene(myDialogScene);
       dialog.show();
     }
-
   }
 
   private void load() {

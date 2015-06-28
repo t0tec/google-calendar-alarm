@@ -16,10 +16,11 @@ public interface GoogleCalendar {
 
   Calendar createCalendar(Calendar calendar);
 
-  boolean calendarExists(String calendarName);
+  Calendar updateCalendar(Calendar calendar);
+
+  boolean calendarExists(Calendar calendar);
 
   List<Event> getEvents(String calendarId);
 
   Event createEvent(Event event, String calendarId, boolean isRecurring);
-
 }

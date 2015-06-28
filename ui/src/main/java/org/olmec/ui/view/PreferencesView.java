@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 
@@ -196,8 +197,8 @@ public class PreferencesView extends Stage {
     });
   }
 
-  private ArrayList getTimeZones() {
-    ArrayList list = new ArrayList<>();
+  private List<String> getTimeZones() {
+    ArrayList<String> list = new ArrayList<>();
     String[] timeZoneIDs = TimeZone.getAvailableIDs();
     for (String timeZone : timeZoneIDs) {
       if (timeZone.matches("^(Africa|America|Asia|Atlantic|Australia|Europe|Indian|Pacific)/.*")) {
@@ -240,7 +241,7 @@ public class PreferencesView extends Stage {
     // Create a specific calendar for our application but checks first if one already exists.
     boolean calendarExists = false;
 
-    if (gCalendarService.calendarExists(gCalendarNameTxtFld.getText())) {
+    if (gCalendarService.calendarExists(new Calendar().setSummary(gCalendarNameTxtFld.getText()))) {
       calendarExists = true;
     }
 

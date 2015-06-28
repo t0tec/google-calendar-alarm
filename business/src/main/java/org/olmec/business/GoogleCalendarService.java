@@ -140,13 +140,25 @@ public class GoogleCalendarService implements GoogleCalendar {
     return createdCalendar;
   }
 
-  public boolean calendarExists(String calendarName) {
+  public Calendar updateCalendar(Calendar calendar) {
+    Calendar updatedCalendar = new Calendar();
+    try {
+      updatedCalendar = getCalendarService().calendars().update(calendar.getId(),
+                                                                calendar).execute();
+    } catch (IOException io) {
+      logger.error("IOException: " + io.getMessage());
+    }
+    return updatedCalendar;
+  }
+
+  public boolean calendarExists(Calendar calendar) {
     boolean exists = false;
     try {
       CalendarList calendarList = getCalendarService().calendarList().list().execute();
 
       for (CalendarListEntry calendarListEntry : calendarList.getItems()) {
-        if (calendarListEntry.getSummary().equals(calendarName)) {
+        if (calendarListEntry.getSummary().equals(calendar.getSummary()) || calendarListEntry
+            .getId().equals(calendar.getId())) {
           exists = true;
         }
       }

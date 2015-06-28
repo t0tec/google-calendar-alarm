@@ -22,9 +22,11 @@ public class Preferences {
     try {
       preferences = new Properties();
       file = new File("preferences.properties");
-      FileInputStream fileInStream = new FileInputStream(file);
-      preferences.load(fileInStream);
-      fileInStream.close();
+      if (file.exists()) {
+        FileInputStream fileInStream = new FileInputStream(file);
+        preferences.load(fileInStream);
+        fileInStream.close();
+      }
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
     }
