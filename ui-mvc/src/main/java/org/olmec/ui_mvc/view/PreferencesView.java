@@ -4,6 +4,7 @@ import com.google.api.services.calendar.model.Calendar;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.olmec.ui_mvc.Navigator;
 import org.olmec.ui_mvc.model.PreferencesModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,6 +152,10 @@ public class PreferencesView extends AnchorPane {
     }
 
     return isValid;
+  }
+
+  public void cancelBtnPressed() {
+    Navigator.getInstance().setScreen(Navigator.OVERVIEW);
   }
 
   private void load() {

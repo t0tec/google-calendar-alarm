@@ -10,8 +10,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.olmec.ui_mvc.Alarm;
-import org.olmec.ui_mvc.model.OverviewModel;
+import org.olmec.ui_mvc.Navigator;
 import org.olmec.ui_mvc.Preferences;
+import org.olmec.ui_mvc.model.OverviewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,7 +128,7 @@ public class Overview extends AnchorPane {
 
 
   public void preferencesMenuPressed() {
-
+    Navigator.getInstance().setScreen(Navigator.PREFERENCES);
   }
 
   public void exitMenuPressed() {
