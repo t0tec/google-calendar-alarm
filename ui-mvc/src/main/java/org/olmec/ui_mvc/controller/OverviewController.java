@@ -37,6 +37,18 @@ public class OverviewController {
         model.setEvents(eventList);
       }
     });
+
+    view.onSelect(new Consumer<Integer>() {
+      @Override
+      public void accept(Integer index) {
+        if (index >= 0 && index < model.getEvents().size()) {
+          final Event event = model.getEvents().get(index);
+          model.selectEvent(event);
+        } else {
+          model.selectEvent(null);
+        }
+      }
+    });
   }
 
   public Overview getView() {

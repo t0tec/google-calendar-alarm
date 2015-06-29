@@ -22,5 +22,9 @@ public interface GoogleCalendar {
 
   List<Event> getEvents(String calendarId);
 
+  Event getEvent(String eventId, String calendarId);
+
   Event createEvent(Event event, String calendarId);
+
+  Event updateEvent(Event event, String calendarId);
 }

@@ -1,7 +1,9 @@
 package org.olmec.ui_mvc.view;
 
 import com.google.api.services.calendar.model.Event;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import it.sauronsoftware.cron4j.Scheduler;
@@ -12,6 +14,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.olmec.ui_mvc.Alarm;
 import org.olmec.ui_mvc.Navigator;
 import org.olmec.ui_mvc.Preferences;
+import org.olmec.ui_mvc.ServiceModule;
+import org.olmec.ui_mvc.controller.EditEventController;
 import org.olmec.ui_mvc.model.OverviewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +31,8 @@ import java.util.function.Consumer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -82,6 +88,8 @@ public class Overview extends AnchorPane {
 
   private Consumer<String> showEventsBtnObserver;
 
+  private Consumer<Integer> selectObserver;
+
   @Inject
   public Overview(OverviewModel model) {
     this.model = model;
@@ -110,6 +118,18 @@ public class Overview extends AnchorPane {
 
   public void initialize() {
     updateTime();
+
+    this.editEventBtn.setDisable(true);
+    eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+      @Override
+      public void changed(ObservableValue<? extends String> observable, String oldValue,
+                          String newValue) {
+        if (selectObserver != null) {
+          editEventBtn.setDisable(false);
+          selectObserver.accept(eventList.getSelectionModel().getSelectedIndex());
+        }
+      }
+    });
   }
 
   private void updateTime() {
@@ -154,6 +174,10 @@ public class Overview extends AnchorPane {
 
   public void onShowEvents(Consumer<String> observer) {
     this.showEventsBtnObserver = observer;
+  }
+
+  public void onSelect(Consumer<Integer> observer) {
+    this.selectObserver = observer;
   }
 
   public void showEventsBtnPressed() {
@@ -266,7 +290,20 @@ public class Overview extends AnchorPane {
   }
 
   public void editEventBtnPressed() {
-    // TODO: implement edit mvc component
+    int index = eventList.getSelectionModel().getSelectedIndex();
+    Event event = model.getEvents().get(index);
+
+    Injector injector = Guice.createInjector(new ServiceModule());
+
+    final EditEventController controller = injector.getInstance(EditEventController.class);
+
+    Navigator navigator = Navigator.getInstance();
+
+    controller.getView().getModel().setEvent(event);
+
+    navigator.addScreen(Navigator.EDIT_EVENT, controller.getView());
+
+    navigator.setScreen(Navigator.EDIT_EVENT);
   }
 
   private void load() {

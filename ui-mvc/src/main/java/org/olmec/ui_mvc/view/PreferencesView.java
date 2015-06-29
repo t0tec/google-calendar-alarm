@@ -87,6 +87,7 @@ public class PreferencesView extends AnchorPane {
 
   public void initialize() {
     timeZoneComboBox.getItems().addAll(getTimeZones());
+    cancelBtn.setCancelButton(true);
   }
 
   private List<String> getTimeZones() {
@@ -133,7 +134,12 @@ public class PreferencesView extends AnchorPane {
       saveBtnObserver.accept(calendar);
     }
 
-    // TODO: show success or go back to main screen
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setResizable(true);
+    alert.initOwner(this.getScene().getWindow());
+    alert.setTitle("Preferences saved!");
+    alert.setContentText("You've saved your preferences!");
+    alert.show();
   }
 
   private boolean isInputValid() {

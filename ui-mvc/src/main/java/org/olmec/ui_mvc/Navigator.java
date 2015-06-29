@@ -17,6 +17,7 @@ public class Navigator extends StackPane {
   public static final String OVERVIEW = "Overview";
   public static final String PREFERENCES = "Preferences";
   public static final String ADD_EVENT = "AddEvent";
+  public static final String EDIT_EVENT = "EditEvent";
 
   private static Navigator instance;
 
@@ -33,6 +34,10 @@ public class Navigator extends StackPane {
 
   public void addScreen(String name, Node screen) {
     this.screens.put(name, screen);
+  }
+
+  public Node getScreen(String name) {
+    return this.screens.get(name);
   }
 
   public boolean setScreen(String name) {

@@ -7,7 +7,7 @@ import com.google.inject.Singleton;
 import org.olmec.business.GoogleCalendar;
 import org.olmec.ui_mvc.Preferences;
 import org.olmec.ui_mvc.model.EventModel;
-import org.olmec.ui_mvc.view.AddEventView;
+import org.olmec.ui_mvc.view.EditEventView;
 
 import java.util.function.Consumer;
 
@@ -17,16 +17,16 @@ import java.util.function.Consumer;
  * @since 1.0
  */
 @Singleton
-public class AddEventController {
+public class EditEventController {
 
   private final EventModel model;
-  private final AddEventView view;
+  private final EditEventView view;
 
   private GoogleCalendar googleCalendar;
 
   @Inject
-  public AddEventController(EventModel model, AddEventView view,
-                            GoogleCalendar googleCalendar) {
+  public EditEventController(EventModel model, EditEventView view,
+                             GoogleCalendar googleCalendar) {
     this.model = model;
     this.view = view;
     this.googleCalendar = googleCalendar;
@@ -34,12 +34,13 @@ public class AddEventController {
     view.onSave(new Consumer<Event>() {
       @Override
       public void accept(Event event) {
-        googleCalendar.createEvent(event, Preferences.getInstance().getValue("googleCalendarId"));
+        model.setEvent(googleCalendar.updateEvent(event, Preferences.getInstance()
+            .getValue("googleCalendarId")));
       }
     });
   }
 
-  public AddEventView getView() {
+  public EditEventView getView() {
     return view;
   }
 }

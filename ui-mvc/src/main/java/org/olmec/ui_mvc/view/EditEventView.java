@@ -35,9 +35,9 @@ import javafx.scene.layout.AnchorPane;
  * @since 1.0
  */
 @Singleton
-public class AddEventView extends AnchorPane {
+public class EditEventView extends AnchorPane {
 
-  private static final Logger logger = LoggerFactory.getLogger(AddEventView.class);
+  private static final Logger logger = LoggerFactory.getLogger(EditEventView.class);
 
   @FXML
   private TextField eventTitleTxtFld;
@@ -77,7 +77,7 @@ public class AddEventView extends AnchorPane {
   private Consumer<Event> saveBtnObserver;
 
   @Inject
-  public AddEventView(EventModel model) {
+  public EditEventView(EventModel model) {
     this.model = model;
 
     model.addChangeObserver(new Runnable() {
@@ -86,11 +86,25 @@ public class AddEventView extends AnchorPane {
         if (model.getEvent() != null) {
           eventTitleTxtFld.setText(model.getEvent().getSummary());
           descrEventTxtFld.setText(model.getEvent().getDescription());
+
+          DateTime dt = new DateTime(model.getEvent().getStart().getDateTime().getValue());
+          startDatePicker.setValue(LocalDate.of(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()));
+          startHourPicker.getValueFactory().setValue(dt.getHourOfDay());
+          startMinutePicker.getValueFactory().setValue(dt.getMinuteOfHour());
+
+          dt = new DateTime(model.getEvent().getEnd().getDateTime().getValue());
+          endDatePicker.setValue(LocalDate.of(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()));
+          endHourPicker.getValueFactory().setValue(dt.getHourOfDay());
+          endMinutePicker.getValueFactory().setValue(dt.getMinuteOfHour());
         }
       }
     });
 
     load();
+  }
+
+  public EventModel getModel() {
+    return this.model;
   }
 
   public void initialize() {
@@ -117,7 +131,7 @@ public class AddEventView extends AnchorPane {
 
   public void saveBtnPressed() {
     if (saveBtnObserver != null && isInputValid()) {
-      Event event = new Event()
+      Event event = model.getEvent()
           .setSummary(eventTitleTxtFld.getText())
           .setDescription(descrEventTxtFld.getText())
           .setStart(extractEventDateTime(startDatePicker.getValue(), startHourPicker.getValue(),
@@ -127,27 +141,13 @@ public class AddEventView extends AnchorPane {
 
       saveBtnObserver.accept(event);
 
-      resetValues();
-
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setResizable(true);
       alert.initOwner(this.getScene().getWindow());
       alert.setTitle("Event added!");
-      alert.setContentText("You've saved a new event to your calendar!");
+      alert.setContentText("You've updated  event to your calendar!");
       alert.show();
     }
-  }
-
-  private void resetValues() {
-    this.eventTitleTxtFld.setText("");
-    this.descrEventTxtFld.setText("");
-    this.startDatePicker.setValue(LocalDate.now());
-    this.startHourPicker.getValueFactory().setValue(12);
-    this.startMinutePicker.getValueFactory().setValue(0);
-    this.endDatePicker.setValue(LocalDate.now());
-    this.endHourPicker.getValueFactory().setValue(12);
-    this.endMinutePicker.getValueFactory().setValue(0);
-    this.repeatChkBx.setSelected(false);
   }
 
   private boolean isInputValid() {

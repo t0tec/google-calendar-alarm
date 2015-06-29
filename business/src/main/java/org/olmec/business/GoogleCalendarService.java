@@ -168,6 +168,27 @@ public class GoogleCalendarService implements GoogleCalendar {
     return exists;
   }
 
+  public Event getEvent(String eventId, String calendarId) {
+    Event event = new Event();
+    try {
+      event = getCalendarService().events().get(calendarId, eventId).execute();
+    } catch (IOException io) {
+      logger.error("IOException: " + io.getMessage());
+    }
+    return event;
+  }
+
+  public Event updateEvent(Event event, String calendarId) {
+    Event updatedEvent = new Event();
+    try {
+      updatedEvent = getCalendarService().events().update(calendarId, event.getId(),
+                                                                event).execute();
+    } catch (IOException io) {
+      logger.error("IOException: " + io.getMessage());
+    }
+    return updatedEvent;
+  }
+
   public List<Event> getEvents(String calendarId) {
     List<Event> events = new ArrayList<Event>();
     try {
