@@ -164,25 +164,11 @@ public class EventAdderView extends Stage {
   private void createSingleEvent() {
     Event event = new Event().setSummary(eventSummaryTxt.getText());
 
-    DateTime startDateTime =
-        new DateTime(extractDateTime(startDatePicker.getValue(), startTimeHourPicker.getValue(),
-                                     startTimeMinutePicker.getValue(),
-                                     Preferences.getInstance().getValue("timeZone")));
+    event.setStart(extractEventDateTime(startDatePicker.getValue(), startTimeHourPicker.getValue(),
+                                        startTimeMinutePicker.getValue()));
 
-    DateTime endDateTime =
-        new DateTime(extractDateTime(endDatePicker.getValue(), endTimeHourPicker.getValue(),
-                                     endTimeMinutePicker.getValue(),
-                                     Preferences.getInstance().getValue("timeZone")));
-
-    EventDateTime start = new EventDateTime()
-        .setDateTime(startDateTime)
-        .setTimeZone(Preferences.getInstance().getValue("timeZone"));
-    event.setStart(start);
-
-    EventDateTime end = new EventDateTime()
-        .setDateTime(endDateTime)
-        .setTimeZone(Preferences.getInstance().getValue("timeZone"));
-    event.setEnd(end);
+    event.setEnd(extractEventDateTime(endDatePicker.getValue(), endTimeHourPicker.getValue(),
+                                      endTimeMinutePicker.getValue()));
 
     String gCalendarId = Preferences.getInstance().getValue("googleCalendarId");
 
@@ -211,13 +197,21 @@ public class EventAdderView extends Stage {
 
   }
 
-  // output format: 2015-06-23T09:00:00+02:00
-  private String extractDateTime(final LocalDate date, final int hour, final int minutes,
-                                 final String timeZone) {
-    org.joda.time.DateTime dt =
-        new org.joda.time.DateTime(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), hour,
-                                   minutes, 0);
-    dt.withZone(DateTimeZone.forTimeZone(TimeZone.getTimeZone(timeZone)));
-    return dt.toString("yyyy-MM-dd'T'HH:mm:ssZZ");
+  private EventDateTime extractEventDateTime(final LocalDate date, final int hour,
+                                             final int minutes) {
+    org.joda.time.DateTime dt = new org.joda.time.DateTime(date.getYear(),
+                                                           date.getMonthValue(),
+                                                           date.getDayOfMonth(), hour, minutes, 0);
+
+    dt.withZone(DateTimeZone.forTimeZone(
+        TimeZone.getTimeZone(Preferences.getInstance().getValue("timeZone"))));
+
+    // output format: 2015-06-23T09:00:00+02:00
+    EventDateTime eventDateTime = new EventDateTime()
+        .setDateTime(
+            new DateTime(dt.toString("yyyy-MM-dd'T'HH:mm:ssZZ")))
+        .setTimeZone(Preferences.getInstance().getValue("timeZone"));
+
+    return eventDateTime;
   }
 }

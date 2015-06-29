@@ -43,7 +43,7 @@
                             <TextField id="gCalendarDescrTxtFld" fx:id="gCalendarDescrTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                             <Label prefHeight="16.0" prefWidth="221.0" text="Music directory:" GridPane.rowIndex="3" />
                             <TextField id="musicDirectoryTxtFld" fx:id="musicDirectoryTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                            <Button id="browseBtn" fx:id="browseBtn" onAction="#onBrowseBtnPressed" mnemonicParsing="false" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                            <Button id="browseBtn" fx:id="browseBtn" onAction="#browseBtnPressed" mnemonicParsing="false" text="Browse" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                             <Label prefHeight="16.0" prefWidth="220.0" text="Time zone:" GridPane.rowIndex="4" />
                             <ComboBox id="timeZoneComboBox" fx:id="timeZoneComboBox" prefHeight="26.0" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                             <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">

@@ -101,7 +101,7 @@ public class PreferencesView extends AnchorPane {
     return list;
   }
 
-  public void onBrowseBtnPressed() {
+  public void browseBtnPressed() {
     DirectoryChooser directoryChooser = new DirectoryChooser();
     directoryChooser.setTitle("Choose music directory");
     directoryChooser.setInitialDirectory(
