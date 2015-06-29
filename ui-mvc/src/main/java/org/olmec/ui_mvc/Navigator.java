@@ -16,6 +16,7 @@ public class Navigator extends StackPane {
 
   public static final String OVERVIEW = "Overview";
   public static final String PREFERENCES = "Preferences";
+  public static final String ADD_EVENT = "AddEvent";
 
   private static Navigator instance;
 

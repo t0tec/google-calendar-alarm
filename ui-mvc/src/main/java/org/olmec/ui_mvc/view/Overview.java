@@ -261,6 +261,14 @@ public class Overview extends AnchorPane {
     }
   }
 
+  public void addEventBtnPressed() {
+    Navigator.getInstance().setScreen(Navigator.ADD_EVENT);
+  }
+
+  public void editEventBtnPressed() {
+    // TODO: implement edit mvc component
+  }
+
   private void load() {
     FXMLLoader fxmlLoader = new FXMLLoader();
     fxmlLoader.setLocation(this.getClass().getResource("/Overview.fxml"));

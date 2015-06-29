@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<fx:root maxHeight="400.0" maxWidth="600.0" minHeight="0" minWidth="0" prefHeight="400.0" prefWidth="600.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
     <AnchorPane maxHeight="250.0" maxWidth="600" minHeight="250.0" minWidth="600" prefHeight="250.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
         <children>
             <VBox layoutY="69.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -36,7 +36,7 @@
                         </VBox.margin>
                         <children>
                             <Label prefHeight="16.0" prefWidth="200.0" text="Google calendar id:" />
-                            <Text id="gCalendarIdTxt" fx:id="gCalendarIdTxt" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="378.7294921875" GridPane.columnIndex="1" />
+                            <Text id="gCalendarIdTxt" fx:id="gCalendarIdTxt" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnSpan="2" GridPane.columnIndex="1" />
                             <Label prefHeight="16.0" prefWidth="195.0" text="Calendar name:" GridPane.rowIndex="1" />
                             <TextField id="gCalendarNameTxtFld" fx:id="gCalendarNameTxtFld" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                             <Label prefHeight="16.0" prefWidth="192.0" text="Calendar description:" GridPane.rowIndex="2" />

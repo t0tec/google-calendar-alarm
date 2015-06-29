@@ -184,7 +184,7 @@ public class GoogleCalendarService implements GoogleCalendar {
     return events;
   }
 
-  public Event createEvent(Event event, String calendarId, boolean isRecurring) {
+  public Event createEvent(Event event, String calendarId) {
     Event createdEvent = new Event();
     try {
       createdEvent = getCalendarService().events().insert(calendarId, event).execute();

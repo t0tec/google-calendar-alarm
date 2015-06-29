@@ -22,5 +22,5 @@ public interface GoogleCalendar {
 
   List<Event> getEvents(String calendarId);
 
-  Event createEvent(Event event, String calendarId, boolean isRecurring);
+  Event createEvent(Event event, String calendarId);
 }

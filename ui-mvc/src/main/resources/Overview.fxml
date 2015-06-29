@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root maxHeight="400.0" maxWidth="600.0" minHeight="0" minWidth="0" prefHeight="400.0" prefWidth="600.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
     <AnchorPane>
         <children>
           <MenuBar id="menuBar" fx:id="menuBar" prefHeight="30.0" prefWidth="600.0">
@@ -47,8 +47,8 @@
                                      <children>
                                         <Button id="showEventsBtn" fx:id="showEventsBtn" onAction="#showEventsBtnPressed" mnemonicParsing="false" prefHeight="36.0" prefWidth="148.0" text="Show events" />
                                         <ToggleButton id="toggleAlarmBtn" fx:id="toggleAlarmBtn" onAction="#toggleAlarmBtnPressed" mnemonicParsing="false" prefHeight="49.0" prefWidth="148.0" text="Start alarm clock" GridPane.rowIndex="1" />
-                                        <Button id="addEventBtn" fx:id="addEventBtn" mnemonicParsing="false" prefHeight="36.0" prefWidth="148.0" text="Add event" GridPane.rowIndex="2" />
-                                        <Button id="editEventBtn" fx:id="editEventBtn" mnemonicParsing="false" prefHeight="44.0" prefWidth="148.0" text="Edit event" GridPane.rowIndex="3" />
+                                        <Button id="addEventBtn" fx:id="addEventBtn" onAction="#addEventBtnPressed" mnemonicParsing="false" prefHeight="36.0" prefWidth="148.0" text="Add event" GridPane.rowIndex="2" />
+                                        <Button id="editEventBtn" fx:id="editEventBtn" mnemonicParsing="false" onAction="#editEventBtnPressed" prefHeight="44.0" prefWidth="148.0" text="Edit event" GridPane.rowIndex="3" />
                                      </children>
                                   </GridPane>
                                </children>

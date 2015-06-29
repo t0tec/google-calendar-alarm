@@ -3,16 +3,18 @@ package org.olmec.ui_mvc;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import org.olmec.ui_mvc.controller.AddEventController;
 import org.olmec.ui_mvc.controller.OverviewController;
 import org.olmec.ui_mvc.controller.PreferencesController;
+import org.olmec.ui_mvc.view.AddEventView;
 import org.olmec.ui_mvc.view.Overview;
 import org.olmec.ui_mvc.view.PreferencesView;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -23,12 +25,8 @@ import javafx.stage.WindowEvent;
  */
 public class AppMVC extends Application {
 
-  private static Stage stage;
-
   @Override
   public void start(Stage primaryStage) throws Exception {
-    this.stage = primaryStage;
-
     Injector injector = Guice.createInjector(new ServiceModule());
 
     final OverviewController overviewController = injector.getInstance(OverviewController.class);
@@ -40,19 +38,23 @@ public class AppMVC extends Application {
 
     final PreferencesView preferencesView = preferencesController.getView();
 
+    final AddEventController addEventController = injector.getInstance(AddEventController.class);
+
+    final AddEventView addEventView = addEventController.getView();
 
     Navigator navigator = Navigator.getInstance();
     navigator.addScreen(Navigator.OVERVIEW, overview);
     navigator.addScreen(Navigator.PREFERENCES, preferencesView);
+    navigator.addScreen(Navigator.ADD_EVENT, addEventView);
 
     navigator.setScreen(Navigator.OVERVIEW);
 
-    Group root = new Group();
+    AnchorPane root = new AnchorPane();
     root.getChildren().addAll(navigator);
 
     primaryStage.setTitle("Google Calendar Alarm MVC");
     primaryStage.setWidth(600);
-    primaryStage.setHeight(400);
+    primaryStage.setHeight(300);
     primaryStage.setResizable(false);
     primaryStage.setScene(new Scene(root));
     primaryStage.show();

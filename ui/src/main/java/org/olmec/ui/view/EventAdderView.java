@@ -88,16 +88,16 @@ public class EventAdderView extends Stage {
     endDatePicker = new DatePicker(LocalDate.now());
     grid.add(endDatePicker, 2, 3, 2, 1);
 
-    startTimeHourPicker = new Spinner<Integer>(0, 24, 12);
+    startTimeHourPicker = new Spinner<Integer>(0, 23, 12);
     grid.add(startTimeHourPicker, 0, 4);
 
-    startTimeMinutePicker = new Spinner<Integer>(0, 60, 0);
+    startTimeMinutePicker = new Spinner<Integer>(0, 59, 0);
     grid.add(startTimeMinutePicker, 1, 4);
 
-    endTimeHourPicker = new Spinner<Integer>(0, 24, 13);
+    endTimeHourPicker = new Spinner<Integer>(0, 23, 13);
     grid.add(endTimeHourPicker, 2, 4);
 
-    endTimeMinutePicker = new Spinner<Integer>(0, 60, 0);
+    endTimeMinutePicker = new Spinner<Integer>(0, 59, 0);
     grid.add(endTimeMinutePicker, 3, 4);
 
     repeatChkBx = new CheckBox("Repeat");
@@ -186,7 +186,7 @@ public class EventAdderView extends Stage {
 
     String gCalendarId = Preferences.getInstance().getValue("googleCalendarId");
 
-    Event createdEvent = gCalendarService.createEvent(event, gCalendarId, false);
+    Event createdEvent = gCalendarService.createEvent(event, gCalendarId);
 
     logger.info("Single event created with unique id: " + createdEvent.getId());
 
