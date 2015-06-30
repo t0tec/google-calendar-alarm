@@ -80,16 +80,6 @@ public class AddEventView extends AnchorPane {
   public AddEventView(EventModel model) {
     this.model = model;
 
-    model.addChangeObserver(new Runnable() {
-      @Override
-      public void run() {
-        if (model.getEvent() != null) {
-          eventTitleTxtFld.setText(model.getEvent().getSummary());
-          descrEventTxtFld.setText(model.getEvent().getDescription());
-        }
-      }
-    });
-
     load();
   }
 
@@ -135,6 +125,8 @@ public class AddEventView extends AnchorPane {
       alert.setTitle("Event added!");
       alert.setContentText("You've saved a new event to your calendar!");
       alert.show();
+
+      logger.info("Event successfully added!");
     }
   }
 
