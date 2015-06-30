@@ -293,17 +293,20 @@ public class Overview extends AnchorPane {
     int index = eventList.getSelectionModel().getSelectedIndex();
     Event event = model.getEvents().get(index);
 
-    Injector injector = Guice.createInjector(new ServiceModule());
-
-    final EditEventController controller = injector.getInstance(EditEventController.class);
-
     Navigator navigator = Navigator.getInstance();
 
-    controller.getView().getModel().setEvent(event);
+    if (navigator.getScreen(Navigator.EDIT_EVENT) != null) {
+      EditEventView view = (EditEventView) navigator.getScreen(Navigator.EDIT_EVENT);
+      view.getModel().setEvent(event);
+      navigator.setScreen(Navigator.EDIT_EVENT);
+    } else {
+      Injector injector = Guice.createInjector(new ServiceModule());
+      final EditEventController controller = injector.getInstance(EditEventController.class);
+      controller.getView().getModel().setEvent(event);
 
-    navigator.addScreen(Navigator.EDIT_EVENT, controller.getView());
-
-    navigator.setScreen(Navigator.EDIT_EVENT);
+      navigator.addScreen(Navigator.EDIT_EVENT, controller.getView());
+      navigator.setScreen(Navigator.EDIT_EVENT);
+    }
   }
 
   private void load() {
