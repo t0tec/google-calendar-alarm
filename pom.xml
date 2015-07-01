@@ -20,6 +20,8 @@
         <module>business</module>
         <module>ui</module>
         <module>ui-mvc</module>
+        <module>ui-mvvm</module>
+        <module>ui-mvvmfx</module>
     </modules>
 
     <properties>

@@ -146,7 +146,6 @@ public class Overview extends AnchorPane {
     timeline.play();
   }
 
-
   public void preferencesMenuPressed() {
     Navigator.getInstance().setScreen(Navigator.PREFERENCES);
   }

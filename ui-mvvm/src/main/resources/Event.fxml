@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox layoutY="69.0" prefHeight="400.0" prefWidth="594.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <GridPane alignment="CENTER" hgap="5.0" prefHeight="210.0" prefWidth="541.0" vgap="15.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="10.0" prefWidth="130.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="10.0" prefWidth="130.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <VBox.margin>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </VBox.margin>
+               <children>
+                  <Label prefHeight="16.0" prefWidth="103.0" text="Title:" />
+                  <TextField id="eventTitleTxtFld" fx:id="eventTitleTxtFld" prefHeight="26.0" prefWidth="363.0" GridPane.columnIndex="1" GridPane.columnSpan="4" />
+                  <Label prefHeight="16.0" prefWidth="195.0" text="Description:" GridPane.rowIndex="1" />
+                  <TextField id="descrEventTxtFld" fx:id="descrEventTxtFld" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+                  <DatePicker id="startDatePicker" fx:id="startDatePicker" prefHeight="30.0" prefWidth="126.0" GridPane.rowIndex="2" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <children>
+                        <Spinner id="startHourPicker" fx:id="startHourPicker" prefHeight="34.0" prefWidth="70.0">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Spinner>
+                        <Spinner id="startMinutePicker" fx:id="startMinutePicker" prefHeight="34.0" prefWidth="70.0">
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Spinner>
+                     </children>
+                  </HBox>
+                  <Label alignment="CENTER" prefHeight="16.0" prefWidth="42.0" text="to" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <DatePicker id="endDatePicker" fx:id="endDatePicker" prefHeight="30.0" prefWidth="122.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                     <children>
+                        <Spinner id="endHourPicker" fx:id="endHourPicker" prefHeight="34.0" prefWidth="70.0">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Spinner>
+                        <Spinner id="endMinutePicker" fx:id="endMinutePicker" prefHeight="34.0" prefWidth="70.0">
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Spinner>
+                     </children>
+                  </HBox>
+                  <CheckBox id="repeatChkBx" fx:id="repeatChkBx" mnemonicParsing="false" prefHeight="18.0" prefWidth="112.0" text="Repeat" GridPane.rowIndex="3" />
+                  <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                     <children>
+                        <Button id="saveBtn" fx:id="saveBtn" onAction="#saveBtnPressed" mnemonicParsing="false" text="Save">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button id="cancelBtn" fx:id="cancelBtn" onAction="#cancelBtnPressed" mnemonicParsing="false" text="Cancel">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
