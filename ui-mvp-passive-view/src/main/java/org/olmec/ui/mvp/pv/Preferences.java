@@ -1,4 +1,4 @@
-package org.olmec.ui.mvvmfx;
+package org.olmec.ui.mvp.pv;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

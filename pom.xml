@@ -22,6 +22,8 @@
         <module>ui-mvc</module>
         <module>ui-mvvm</module>
         <module>ui-mvvmfx</module>
+        <module>ui-mvp-passive-view</module>
+        <module>ui-mvp-afterburner</module>
     </modules>
 
     <properties>

@@ -7,6 +7,7 @@ import de.saxsys.mvvmfx.ViewModel;
 
 import eu.lestard.advanced_bindings.api.ObjectBindings;
 
+import org.olmec.business.GoogleCalendar;
 import org.olmec.business.GoogleCalendarService;
 import org.olmec.ui.mvvmfx.Preferences;
 import org.olmec.ui.mvvmfx.model.EventTO;
@@ -27,7 +28,7 @@ import javafx.collections.ObservableList;
  */
 public class MainViewModel implements ViewModel {
 
-  private final GoogleCalendarService googleCalendar;
+  private final GoogleCalendar googleCalendar;
 
   private StringProperty eventId = new SimpleStringProperty();
   private StringProperty eventSummary = new SimpleStringProperty();
