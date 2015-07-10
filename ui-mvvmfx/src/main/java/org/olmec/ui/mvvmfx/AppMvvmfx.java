@@ -26,7 +26,7 @@ public class AppMvvmfx extends MvvmfxGuiceApplication {
     ViewTuple<MainView, MainViewModel> viewTuple = FluentViewLoader.fxmlView(MainView.class).load();
 
     Parent root = viewTuple.getView();
-    primaryStage.setTitle("Google Calendar Alarm MVC");
+    primaryStage.setTitle("Google Calendar Alarm MVVMFX");
     primaryStage.setWidth(600);
     primaryStage.setHeight(300);
     primaryStage.setResizable(false);

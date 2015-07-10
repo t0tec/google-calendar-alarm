@@ -54,7 +54,7 @@ public class OverviewPresenterImpl implements OverviewPresenter {
 
   @Override
   public void select() {
-    throw new UnsupportedOperationException("#select()");
+
   }
 
   @Override

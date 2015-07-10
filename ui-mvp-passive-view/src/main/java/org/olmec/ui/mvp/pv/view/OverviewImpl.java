@@ -68,9 +68,7 @@ public class OverviewImpl extends AnchorPane implements Overview {
   }
 
   public void showEventsBtnPressed() {
-    if (overviewPresenter != null) {
       overviewPresenter.show();
-    }
   }
 
   public void toggleAlarmBtnPressed() {

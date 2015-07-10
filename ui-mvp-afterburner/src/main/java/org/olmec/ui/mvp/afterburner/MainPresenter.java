@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -84,6 +85,7 @@ public class MainPresenter {
   }
 
   public void exitMenuPressed() {
+    Platform.exit();
   }
 
   public void aboutMenuPressed() {

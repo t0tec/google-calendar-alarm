@@ -38,7 +38,7 @@ public class AppMvvm extends Application {
 
     final Parent root = fxmlLoader.load();
 
-    primaryStage.setTitle("Google Calendar Alarm MVC");
+    primaryStage.setTitle("Google Calendar Alarm MVVM");
     primaryStage.setWidth(600);
     primaryStage.setHeight(300);
     primaryStage.setResizable(false);

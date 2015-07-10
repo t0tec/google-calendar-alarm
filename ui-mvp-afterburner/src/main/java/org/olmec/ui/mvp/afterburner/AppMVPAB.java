@@ -22,8 +22,7 @@ public class AppMVPAB extends Application {
 
     MainView mainView = new MainView();
 
-    primaryStage.setTitle("Library MVP AfterBurner");
-    ;
+    primaryStage.setTitle("Google Calendar Alarm MVP AfterBurner");
     primaryStage.setMaxWidth(600);
     primaryStage.setMaxHeight(300);
     primaryStage.setResizable(false);

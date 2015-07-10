@@ -25,7 +25,7 @@ public class AppMVPPassiveView extends Application {
 
     final OverviewPresenter overviewPresenter = injector.getInstance(OverviewPresenter.class);
 
-    primaryStage.setTitle("Google Calendar Alarm MVC");
+    primaryStage.setTitle("Google Calendar Alarm MVP Passive View");
     primaryStage.setWidth(600);
     primaryStage.setHeight(300);
     primaryStage.setResizable(false);
