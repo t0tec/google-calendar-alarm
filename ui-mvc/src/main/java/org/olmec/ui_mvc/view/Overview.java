@@ -1,6 +1,5 @@
 package org.olmec.ui_mvc.view;
 
-import com.google.api.services.calendar.model.Event;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -16,6 +15,7 @@ import org.olmec.ui_mvc.Navigator;
 import org.olmec.ui_mvc.Preferences;
 import org.olmec.ui_mvc.ServiceModule;
 import org.olmec.ui_mvc.controller.EditEventController;
+import org.olmec.ui_mvc.model.EventTO;
 import org.olmec.ui_mvc.model.OverviewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -44,6 +42,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
@@ -51,6 +50,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 
 /**
@@ -79,7 +79,7 @@ public class Overview extends AnchorPane {
   private Label currentTimeLbl;
 
   @FXML
-  private ListView<String> eventList;
+  private ListView<EventTO> eventList;
 
   private final OverviewModel model;
 
@@ -88,7 +88,7 @@ public class Overview extends AnchorPane {
 
   private Consumer<String> showEventsBtnObserver;
 
-  private Consumer<Integer> selectObserver;
+  private Consumer<EventTO> selectObserver;
 
   @Inject
   public Overview(OverviewModel model) {
@@ -99,17 +99,7 @@ public class Overview extends AnchorPane {
       @Override
       public void run() {
         eventList.getItems().clear();
-
-        final ObservableList<String> listEvents = FXCollections.observableArrayList();
-        for (Event event : model.getEvents()) {
-          DateTime startTime = new DateTime(event.getStart().getDateTime().getValue());
-          DateTime endTime = new DateTime(event.getEnd().getDateTime().getValue());
-          listEvents.add(
-              event.getSummary() + ": " + startTime.toString("dd/MM/yyyy HH:mm:ss") + " - "
-              + endTime.toString("dd/MM/yyyy HH:mm:ss"));
-        }
-
-        eventList.setItems(listEvents);
+        eventList.setItems(model.getEvents());
       }
     });
 
@@ -117,16 +107,23 @@ public class Overview extends AnchorPane {
   }
 
   public void initialize() {
+    eventList.setCellFactory(new Callback<ListView<EventTO>, ListCell<EventTO>>() {
+      @Override
+      public ListCell<EventTO> call(ListView<EventTO> param) {
+        return new EventTOListCell();
+      }
+    });
+
     updateTime();
 
     this.editEventBtn.setDisable(true);
-    eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+    eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<EventTO>() {
       @Override
-      public void changed(ObservableValue<? extends String> observable, String oldValue,
-                          String newValue) {
+      public void changed(ObservableValue<? extends EventTO> observable, EventTO oldValue,
+                          EventTO newValue) {
         if (selectObserver != null) {
           editEventBtn.setDisable(false);
-          selectObserver.accept(eventList.getSelectionModel().getSelectedIndex());
+          selectObserver.accept(eventList.getSelectionModel().getSelectedItem());
         }
       }
     });
@@ -175,7 +172,7 @@ public class Overview extends AnchorPane {
     this.showEventsBtnObserver = observer;
   }
 
-  public void onSelect(Consumer<Integer> observer) {
+  public void onSelect(Consumer<EventTO> observer) {
     this.selectObserver = observer;
   }
 
@@ -209,9 +206,9 @@ public class Overview extends AnchorPane {
 
           DateTimeFormatter dtFmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
 
-          List<Event> events = model.getEvents();
-          for (Event event : events) {
-            DateTime startTime = new DateTime(event.getStart().getDateTime().getValue());
+          List<EventTO> events = model.getEvents();
+          for (EventTO event : events) {
+            DateTime startTime = new DateTime(event.startProperty().getValue());
             if (startTime.toString(dtFmt).equals(new DateTime().toString(dtFmt))) {
               logger.info(event.getSummary() + " has just started");
 
@@ -289,19 +286,18 @@ public class Overview extends AnchorPane {
   }
 
   public void editEventBtnPressed() {
-    int index = eventList.getSelectionModel().getSelectedIndex();
-    Event event = model.getEvents().get(index);
+    EventTO item = eventList.getSelectionModel().getSelectedItem();
 
     Navigator navigator = Navigator.getInstance();
 
     if (navigator.getScreen(Navigator.EDIT_EVENT) != null) {
       EditEventView view = (EditEventView) navigator.getScreen(Navigator.EDIT_EVENT);
-      view.getModel().setEvent(event);
+      view.getModel().setEvent(item);
       navigator.setScreen(Navigator.EDIT_EVENT);
     } else {
       Injector injector = Guice.createInjector(new ServiceModule());
       final EditEventController controller = injector.getInstance(EditEventController.class);
-      controller.getView().getModel().setEvent(event);
+      controller.getView().getModel().setEvent(item);
 
       navigator.addScreen(Navigator.EDIT_EVENT, controller.getView());
       navigator.setScreen(Navigator.EDIT_EVENT);

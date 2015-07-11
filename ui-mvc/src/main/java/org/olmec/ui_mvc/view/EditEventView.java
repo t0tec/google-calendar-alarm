@@ -1,21 +1,17 @@
 package org.olmec.ui_mvc.view;
 
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.olmec.ui_mvc.Navigator;
-import org.olmec.ui_mvc.Preferences;
 import org.olmec.ui_mvc.model.EventModel;
+import org.olmec.ui_mvc.model.EventTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.TimeZone;
 import java.util.function.Consumer;
 
 import javafx.fxml.FXML;
@@ -74,7 +70,7 @@ public class EditEventView extends AnchorPane {
 
   private final EventModel model;
 
-  private Consumer<Event> saveBtnObserver;
+  private Consumer<EventTO> saveBtnObserver;
 
   @Inject
   public EditEventView(EventModel model) {
@@ -87,13 +83,15 @@ public class EditEventView extends AnchorPane {
           eventTitleTxtFld.setText(model.getEvent().getSummary());
           descrEventTxtFld.setText(model.getEvent().getDescription());
 
-          DateTime dt = new DateTime(model.getEvent().getStart().getDateTime().getValue());
-          startDatePicker.setValue(LocalDate.of(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()));
+          DateTime dt = new DateTime(model.getEvent().getStart());
+          startDatePicker
+              .setValue(LocalDate.of(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()));
           startHourPicker.getValueFactory().setValue(dt.getHourOfDay());
           startMinutePicker.getValueFactory().setValue(dt.getMinuteOfHour());
 
-          dt = new DateTime(model.getEvent().getEnd().getDateTime().getValue());
-          endDatePicker.setValue(LocalDate.of(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()));
+          dt = new DateTime(model.getEvent().getEnd());
+          endDatePicker
+              .setValue(LocalDate.of(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()));
           endHourPicker.getValueFactory().setValue(dt.getHourOfDay());
           endMinutePicker.getValueFactory().setValue(dt.getMinuteOfHour());
         }
@@ -125,18 +123,23 @@ public class EditEventView extends AnchorPane {
     cancelBtn.setCancelButton(true);
   }
 
-  public void onSave(Consumer<Event> observer) {
+  public void onSave(Consumer<EventTO> observer) {
     this.saveBtnObserver = observer;
   }
 
   public void saveBtnPressed() {
     if (saveBtnObserver != null && isInputValid()) {
-      Event event = model.getEvent()
-          .setSummary(eventTitleTxtFld.getText())
-          .setDescription(descrEventTxtFld.getText())
-          .setStart(extractEventDateTime(startDatePicker.getValue(), startHourPicker.getValue(),
-                                         startMinutePicker.getValue()))
-          .setEnd(extractEventDateTime(endDatePicker.getValue(), endHourPicker.getValue(),
+      EventTO event = model.getEvent();
+
+      event.setSummary(eventTitleTxtFld.getText());
+      event.setDescription(descrEventTxtFld.getText());
+
+
+      event.setStart(extractJodaDateTime(startDatePicker.getValue(), startHourPicker.getValue(),
+                                         startMinutePicker.getValue()));
+
+
+      event.setEnd(extractJodaDateTime(endDatePicker.getValue(), endHourPicker.getValue(),
                                        endMinutePicker.getValue()));
 
       saveBtnObserver.accept(event);
@@ -169,21 +172,11 @@ public class EditEventView extends AnchorPane {
     Navigator.getInstance().setScreen(Navigator.OVERVIEW);
   }
 
-  private EventDateTime extractEventDateTime(final LocalDate date, final int hour,
-                                             final int minutes) {
+  private DateTime extractJodaDateTime(final LocalDate date, final int hour,
+                                       final int minutes) {
     DateTime dt = new DateTime(date.getYear(),
                                date.getMonthValue(), date.getDayOfMonth(), hour, minutes, 0);
-
-    dt.withZone(DateTimeZone.forTimeZone(
-        TimeZone.getTimeZone(Preferences.getInstance().getValue("timeZone"))));
-
-    // output format example: 2015-06-29T09:00:00+02:00
-    EventDateTime eventDateTime = new EventDateTime()
-        .setDateTime(
-            new com.google.api.client.util.DateTime(dt.toString("yyyy-MM-dd'T'HH:mm:ssZZ")))
-        .setTimeZone(Preferences.getInstance().getValue("timeZone"));
-
-    return eventDateTime;
+    return dt;
   }
 
   private void load() {

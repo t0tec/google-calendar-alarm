@@ -1,7 +1,5 @@
 package org.olmec.ui_mvc.model;
 
-import com.google.api.services.calendar.model.Event;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,15 +10,15 @@ import java.util.List;
  */
 public class EventModel {
 
-  private Event event;
+  private EventTO event;
 
   private List<Runnable> observers = new ArrayList<>();
 
-  public Event getEvent() {
+  public EventTO getEvent() {
     return this.event;
   }
 
-  public void setEvent(Event event) {
+  public void setEvent(EventTO event) {
     this.event = event;
     for (Runnable runnable : this.observers) {
       runnable.run();

@@ -12,4 +12,4 @@ Using:
 
 Attribution:
 
-- Thanks [@lestard's](https://github.com/lestard) and his examples  [repo](https://github.com/lestard/juggr_model-view-star) for learning more about different forms of MVC
+- Thanks [@lestard's](https://github.com/lestard) and his examples in his [repo](https://github.com/lestard/juggr_model-view-star) for learning more about different forms of MVC

@@ -1,11 +1,13 @@
 package org.olmec.ui_mvc.model;
 
-import com.google.api.services.calendar.model.Event;
 import com.google.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * @author t0tec (t0tec.olmec@gmail.com)
@@ -15,23 +17,23 @@ import java.util.function.Consumer;
 @Singleton
 public class OverviewModel {
 
-  private List<Event> events = new ArrayList<>();
+  private ObservableList<EventTO> events = FXCollections.observableArrayList(EventTO.extractor());
 
   private List<Runnable> eventObservers = new ArrayList<>();
 
-  private List<Consumer<Event>> selectedEventObservers = new ArrayList<>();
+  private List<Consumer<EventTO>> selectedEventObservers = new ArrayList<>();
 
-  public List<Event> getEvents() {
+  public ObservableList<EventTO> getEvents() {
     return events;
   }
 
-  public void selectEvent(Event event) {
-    for (Consumer<Event> observer : this.selectedEventObservers) {
+  public void selectEvent(EventTO event) {
+    for (Consumer<EventTO> observer : this.selectedEventObservers) {
       observer.accept(event);
     }
   }
 
-  public void setEvents(List<Event> events) {
+  public void setEvents(ObservableList<EventTO> events) {
     this.events = events;
     for (Runnable runnable : this.eventObservers) {
       runnable.run();
@@ -46,11 +48,11 @@ public class OverviewModel {
     this.eventObservers.remove(observer);
   }
 
-  public void addSelectedEventObserver(Consumer<Event> observer) {
+  public void addSelectedEventObserver(Consumer<EventTO> observer) {
     this.selectedEventObservers.add(observer);
   }
 
-  public void removeSelectedEventObserver(Consumer<Event> observer) {
+  public void removeSelectedEventObserver(Consumer<EventTO> observer) {
     this.selectedEventObservers.remove(observer);
   }
 }
