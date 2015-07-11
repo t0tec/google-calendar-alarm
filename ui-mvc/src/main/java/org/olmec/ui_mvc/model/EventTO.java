@@ -27,14 +27,24 @@ public class EventTO {
   private ObjectProperty<DateTime> end;
   private ObjectProperty<DateTime> start;
 
+  public EventTO() {
+    this.event = new SimpleObjectProperty<>();
+
+    id = new SimpleStringProperty(event.getValue().getId());
+    summary = new SimpleStringProperty(event.getValue().getSummary());
+    description = new SimpleStringProperty(event.getValue().getDescription());
+    start = new SimpleObjectProperty<>(new DateTime(event.getValue().getStart().getDateTime().getValue()));
+    end = new SimpleObjectProperty<>(new DateTime(event.getValue().getEnd().getDateTime().getValue()));
+  }
+
   public EventTO(Event event) {
     this.event = new SimpleObjectProperty<>(event);
 
     id = new SimpleStringProperty(event.getId());
     summary = new SimpleStringProperty(event.getSummary());
     description = new SimpleStringProperty(event.getDescription());
-    start = new SimpleObjectProperty<DateTime>(new DateTime(event.getStart().getDateTime().getValue()));
-    end = new SimpleObjectProperty<DateTime>(new DateTime(event.getEnd().getDateTime().getValue()));
+    start = new SimpleObjectProperty<>(new DateTime(event.getStart().getDateTime().getValue()));
+    end = new SimpleObjectProperty<>(new DateTime(event.getEnd().getDateTime().getValue()));
   }
 
 

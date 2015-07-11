@@ -9,7 +9,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.olmec.ui_mvc.Navigator;
 import org.olmec.ui_mvc.Preferences;
-import org.olmec.ui_mvc.model.EventModel;
+import org.olmec.ui_mvc.model.EventTO;
+import org.olmec.ui_mvc.model.OverviewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,12 +73,12 @@ public class AddEventView extends AnchorPane {
   @FXML
   private Button cancelBtn;
 
-  private final EventModel model;
+  private final OverviewModel model;
 
-  private Consumer<Event> saveBtnObserver;
+  private Consumer<EventTO> saveBtnObserver;
 
   @Inject
-  public AddEventView(EventModel model) {
+  public AddEventView(OverviewModel model) {
     this.model = model;
 
     load();
@@ -101,7 +102,7 @@ public class AddEventView extends AnchorPane {
     cancelBtn.setCancelButton(true);
   }
 
-  public void onSave(Consumer<Event> observer) {
+  public void onSave(Consumer<EventTO> observer) {
     this.saveBtnObserver = observer;
   }
 
@@ -115,7 +116,9 @@ public class AddEventView extends AnchorPane {
           .setEnd(extractEventDateTime(endDatePicker.getValue(), endHourPicker.getValue(),
                                        endMinutePicker.getValue()));
 
-      saveBtnObserver.accept(event);
+      EventTO eventTO = new EventTO(event);
+
+      saveBtnObserver.accept(eventTO);
 
       resetValues();
 
