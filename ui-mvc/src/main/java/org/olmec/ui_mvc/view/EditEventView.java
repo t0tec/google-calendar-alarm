@@ -133,12 +133,8 @@ public class EditEventView extends AnchorPane {
 
       event.setSummary(eventTitleTxtFld.getText());
       event.setDescription(descrEventTxtFld.getText());
-
-
       event.setStart(extractJodaDateTime(startDatePicker.getValue(), startHourPicker.getValue(),
                                          startMinutePicker.getValue()));
-
-
       event.setEnd(extractJodaDateTime(endDatePicker.getValue(), endHourPicker.getValue(),
                                        endMinutePicker.getValue()));
 

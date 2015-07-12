@@ -1,14 +1,10 @@
 package org.olmec.ui_mvc.view;
 
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.olmec.ui_mvc.Navigator;
-import org.olmec.ui_mvc.Preferences;
 import org.olmec.ui_mvc.model.EventTO;
 import org.olmec.ui_mvc.model.OverviewModel;
 import org.slf4j.Logger;
@@ -16,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.TimeZone;
 import java.util.function.Consumer;
 
 import javafx.fxml.FXML;
@@ -108,15 +103,14 @@ public class AddEventView extends AnchorPane {
 
   public void saveBtnPressed() {
     if (saveBtnObserver != null && isInputValid()) {
-      Event event = new Event()
-          .setSummary(eventTitleTxtFld.getText())
-          .setDescription(descrEventTxtFld.getText())
-          .setStart(extractEventDateTime(startDatePicker.getValue(), startHourPicker.getValue(),
-                                         startMinutePicker.getValue()))
-          .setEnd(extractEventDateTime(endDatePicker.getValue(), endHourPicker.getValue(),
-                                       endMinutePicker.getValue()));
-
-      EventTO eventTO = new EventTO(event);
+      EventTO eventTO = new EventTO().getBuilder().summary(eventTitleTxtFld.getText())
+          .description(descrEventTxtFld.getText())
+          .start(extractJodaDateTime(startDatePicker.getValue(),
+                                     startHourPicker.getValue(),
+                                     startMinutePicker.getValue()))
+          .end(extractJodaDateTime(endDatePicker.getValue(),
+                                   endHourPicker.getValue(),
+                                   endMinutePicker.getValue())).build();
 
       saveBtnObserver.accept(eventTO);
 
@@ -164,21 +158,11 @@ public class AddEventView extends AnchorPane {
     Navigator.getInstance().setScreen(Navigator.OVERVIEW);
   }
 
-  private EventDateTime extractEventDateTime(final LocalDate date, final int hour,
-                                             final int minutes) {
+  private DateTime extractJodaDateTime(final LocalDate date, final int hour,
+                                       final int minutes) {
     DateTime dt = new DateTime(date.getYear(),
                                date.getMonthValue(), date.getDayOfMonth(), hour, minutes, 0);
-
-    dt.withZone(DateTimeZone.forTimeZone(
-        TimeZone.getTimeZone(Preferences.getInstance().getValue("timeZone"))));
-
-    // output format example: 2015-06-29T09:00:00+02:00
-    EventDateTime eventDateTime = new EventDateTime()
-        .setDateTime(
-            new com.google.api.client.util.DateTime(dt.toString("yyyy-MM-dd'T'HH:mm:ssZZ")))
-        .setTimeZone(Preferences.getInstance().getValue("timeZone"));
-
-    return eventDateTime;
+    return dt;
   }
 
   private void load() {
