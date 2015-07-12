@@ -1,5 +1,6 @@
 package org.olmec.ui_mvc.controller;
 
+import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -36,8 +37,15 @@ public class AddEventController {
       @Override
       public void accept(EventTO event) {
         Event result = googleCalendar.createEvent(event.getEvent(),
-                                        Preferences.getInstance().getValue("googleCalendarId"));
-        model.getEvents().add(new EventTO(result));
+                                                  Preferences.getInstance()
+                                                      .getValue("googleCalendarId"));
+
+        // Only add events that are in the future or have already started?
+        if (result.getEnd().getDateTime().getValue() >
+               new DateTime(System.currentTimeMillis()).getValue()) {
+
+          model.getEvents().add(new EventTO(result));
+        }
       }
     });
   }

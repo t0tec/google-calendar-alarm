@@ -161,6 +161,26 @@ public class EditEventView extends AnchorPane {
 
       isValid = false;
     }
+
+    DateTime start = extractJodaDateTime(startDatePicker.getValue(),
+                                         startHourPicker.getValue(),
+                                         startMinutePicker.getValue());
+
+    DateTime end = extractJodaDateTime(endDatePicker.getValue(),
+                                       endHourPicker.getValue(),
+                                       endMinutePicker.getValue());
+
+    if (start.getMillis() > end.getMillis()) {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setResizable(true);
+      alert.initOwner(this.getScene().getWindow());
+      alert.setTitle("Time range not valid!");
+      alert.setContentText("The specified time range is not valid!");
+      alert.show();
+
+      isValid = false;
+    }
+
     return isValid;
   }
 

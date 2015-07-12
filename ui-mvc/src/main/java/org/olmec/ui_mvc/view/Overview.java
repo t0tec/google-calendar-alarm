@@ -40,6 +40,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -116,6 +117,13 @@ public class Overview extends AnchorPane {
 
     updateTime();
 
+    Platform.runLater(new Runnable() {
+      @Override
+      public void run() {
+        checkPreferencesExist();
+      }
+    });
+
     this.editEventBtn.setDisable(true);
     eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<EventTO>() {
       @Override
@@ -127,6 +135,21 @@ public class Overview extends AnchorPane {
         }
       }
     });
+  }
+
+  private void checkPreferencesExist() {
+    if (!Preferences.getInstance().exists()) {
+      Alert alert = new Alert(Alert.AlertType.WARNING);
+      alert.setResizable(true);
+      alert.initOwner(this.getScene().getWindow());
+      alert.setTitle("Preferences not set!");
+      alert.setContentText("You have to create a preference file first! Open Menu -> Preferences");
+      alert.show();
+
+      showEventsBtn.setDisable(true);
+      toggleAlarmBtn.setDisable(true);
+      addEventBtn.setDisable(true);
+    }
   }
 
   private void updateTime() {
