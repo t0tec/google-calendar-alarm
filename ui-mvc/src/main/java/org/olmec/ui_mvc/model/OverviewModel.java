@@ -47,12 +47,4 @@ public class OverviewModel {
   public void removeEventsChangeObserver(Runnable observer) {
     this.eventObservers.remove(observer);
   }
-
-  public void addSelectedEventObserver(Consumer<EventTO> observer) {
-    this.selectedEventObservers.add(observer);
-  }
-
-  public void removeSelectedEventObserver(Consumer<EventTO> observer) {
-    this.selectedEventObservers.remove(observer);
-  }
 }

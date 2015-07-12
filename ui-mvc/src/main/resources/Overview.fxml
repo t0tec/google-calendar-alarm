@@ -45,10 +45,11 @@
                                         <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
                                      </padding>
                                      <children>
-                                        <Button id="showEventsBtn" fx:id="showEventsBtn" onAction="#showEventsBtnPressed" mnemonicParsing="false" prefHeight="36.0" prefWidth="148.0" text="Show events" />
-                                        <ToggleButton id="toggleAlarmBtn" fx:id="toggleAlarmBtn" onAction="#toggleAlarmBtnPressed" mnemonicParsing="false" prefHeight="49.0" prefWidth="148.0" text="Start alarm clock" GridPane.rowIndex="1" />
-                                        <Button id="addEventBtn" fx:id="addEventBtn" onAction="#addEventBtnPressed" mnemonicParsing="false" prefHeight="36.0" prefWidth="148.0" text="Add event" GridPane.rowIndex="2" />
-                                        <Button id="editEventBtn" fx:id="editEventBtn" mnemonicParsing="false" onAction="#editEventBtnPressed" prefHeight="44.0" prefWidth="148.0" text="Edit event" GridPane.rowIndex="3" />
+                                        <Button id="showEventsBtn" fx:id="showEventsBtn" onAction="#showEventsBtnPressed" mnemonicParsing="false" maxHeight="36.0" prefWidth="148.0" text="Show events" />
+                                        <ToggleButton id="toggleAlarmBtn" fx:id="toggleAlarmBtn" onAction="#toggleAlarmBtnPressed" mnemonicParsing="false" maxHeight="36.0" prefWidth="148.0" text="Start alarm clock" GridPane.rowIndex="1" />
+                                        <Button id="addEventBtn" fx:id="addEventBtn" onAction="#addEventBtnPressed" mnemonicParsing="false" maxHeight="36.0" prefWidth="148.0" text="Add event" GridPane.rowIndex="2" />
+                                        <Button id="editEventBtn" fx:id="editEventBtn" mnemonicParsing="false" onAction="#editEventBtnPressed" maxHeight="36.0" prefWidth="148.0" text="Edit event" GridPane.rowIndex="3" />
+                                        <Button id="deleteEventBtn" fx:id="deleteEventBtn" mnemonicParsing="false" onAction="#deleteEventBtnPressed" maxHeight="36.0" prefWidth="148.0" text="Delete event" GridPane.rowIndex="4" />
                                      </children>
                                   </GridPane>
                                </children>

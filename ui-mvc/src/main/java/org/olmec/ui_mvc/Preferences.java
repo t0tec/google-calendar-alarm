@@ -34,6 +34,7 @@ public class Preferences {
       }
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, This file must exist!", io);
     }
   }
 

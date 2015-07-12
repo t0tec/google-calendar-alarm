@@ -126,6 +126,7 @@ public class GoogleCalendarService implements GoogleCalendar {
       calendar = getCalendarService().calendars().get(id).execute();
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, credentials must exist!", io);
     }
     return calendar;
   }
@@ -136,6 +137,7 @@ public class GoogleCalendarService implements GoogleCalendar {
       createdCalendar = getCalendarService().calendars().insert(calendar).execute();
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, credentials must exist!", io);
     }
     return createdCalendar;
   }
@@ -147,6 +149,7 @@ public class GoogleCalendarService implements GoogleCalendar {
                                                                 calendar).execute();
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, credentials must exist!", io);
     }
     return updatedCalendar;
   }
@@ -164,6 +167,7 @@ public class GoogleCalendarService implements GoogleCalendar {
       }
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, credentials must exist!", io);
     }
     return exists;
   }
@@ -174,6 +178,7 @@ public class GoogleCalendarService implements GoogleCalendar {
       event = getCalendarService().events().get(calendarId, eventId).execute();
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, credentials must exist!", io);
     }
     return event;
   }
@@ -182,11 +187,21 @@ public class GoogleCalendarService implements GoogleCalendar {
     Event updatedEvent = new Event();
     try {
       updatedEvent = getCalendarService().events().update(calendarId, event.getId(),
-                                                                event).execute();
+                                                          event).execute();
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, credentials must exist!", io);
     }
     return updatedEvent;
+  }
+
+  public void deleteEvent(Event event, String calendarId) {
+    try {
+      getCalendarService().events().delete(calendarId, event.getId()).execute();
+    } catch (IOException io) {
+      logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, credentials must exist!", io);
+    }
   }
 
   public List<Event> getEvents(String calendarId) {
@@ -201,6 +216,7 @@ public class GoogleCalendarService implements GoogleCalendar {
           .getItems();
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, credentials must exist!", io);
     }
     return events;
   }
@@ -211,6 +227,7 @@ public class GoogleCalendarService implements GoogleCalendar {
       createdEvent = getCalendarService().events().insert(calendarId, event).execute();
     } catch (IOException io) {
       logger.error("IOException: " + io.getMessage());
+      throw new RuntimeException("This should never happen, credentials must exist!", io);
     }
     return createdEvent;
   }

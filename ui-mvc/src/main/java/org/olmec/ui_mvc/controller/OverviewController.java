@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.olmec.business.GoogleCalendar;
+import org.olmec.ui_mvc.Preferences;
 import org.olmec.ui_mvc.model.EventTO;
 import org.olmec.ui_mvc.model.OverviewModel;
 import org.olmec.ui_mvc.view.Overview;
@@ -53,6 +54,17 @@ public class OverviewController {
           model.selectEvent(event);
         } else {
           model.selectEvent(null);
+        }
+      }
+    });
+
+    view.onDelete(new Consumer<EventTO>() {
+      @Override
+      public void accept(EventTO event) {
+        if (event != null) {
+          googleCalendar.deleteEvent(event.getEvent(),
+                                     Preferences.getInstance().getValue("googleCalendarId"));
+          model.getEvents().remove(event);
         }
       }
     });

@@ -77,6 +77,9 @@ public class Overview extends AnchorPane {
   private Button editEventBtn;
 
   @FXML
+  private Button deleteEventBtn;
+
+  @FXML
   private Label currentTimeLbl;
 
   @FXML
@@ -90,6 +93,8 @@ public class Overview extends AnchorPane {
   private Consumer<String> showEventsBtnObserver;
 
   private Consumer<EventTO> selectObserver;
+
+  private Consumer<EventTO> deleteBtnObserver;
 
   @Inject
   public Overview(OverviewModel model) {
@@ -124,13 +129,16 @@ public class Overview extends AnchorPane {
       }
     });
 
+
     this.editEventBtn.setDisable(true);
+    this.deleteEventBtn.setDisable(true);
     eventList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<EventTO>() {
       @Override
       public void changed(ObservableValue<? extends EventTO> observable, EventTO oldValue,
                           EventTO newValue) {
         if (selectObserver != null) {
           editEventBtn.setDisable(false);
+          deleteEventBtn.setDisable(false);
           selectObserver.accept(eventList.getSelectionModel().getSelectedItem());
         }
       }
@@ -198,6 +206,11 @@ public class Overview extends AnchorPane {
   public void onSelect(Consumer<EventTO> observer) {
     this.selectObserver = observer;
   }
+
+  public void onDelete(Consumer<EventTO> observer) {
+    this.deleteBtnObserver = observer;
+  }
+
 
   public void showEventsBtnPressed() {
     if (showEventsBtnObserver != null) {
@@ -324,6 +337,18 @@ public class Overview extends AnchorPane {
 
       navigator.addScreen(Navigator.EDIT_EVENT, controller.getView());
       navigator.setScreen(Navigator.EDIT_EVENT);
+    }
+  }
+
+  public void deleteEventBtnPressed() {
+    EventTO item = eventList.getSelectionModel().getSelectedItem();
+
+    if (deleteBtnObserver != null) {
+      deleteBtnObserver.accept(item);
+      if (model.getEvents().size() == 0) {
+        this.editEventBtn.setDisable(true);
+        this.deleteEventBtn.setDisable(true);
+      }
     }
   }
 

@@ -27,4 +27,6 @@ public interface GoogleCalendar {
   Event createEvent(Event event, String calendarId);
 
   Event updateEvent(Event event, String calendarId);
+
+  void deleteEvent(Event event, String calendarId);
 }

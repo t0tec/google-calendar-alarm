@@ -1,6 +1,6 @@
 # Google Calendar Alarm
 This application will trigger an alarm (play music out your music directory) when an event is about to start.
-Also you can add/edit new (single) events to your calendar.
+Also you can add/edit/delete (single, non-recurring) events to your calendar.
 
 Using:
 
