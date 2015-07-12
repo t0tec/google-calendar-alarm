@@ -1,13 +1,18 @@
 package org.olmec.ui_mvc.controller;
 
 import com.google.api.services.calendar.model.Event;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import org.olmec.business.GoogleCalendar;
+import org.olmec.ui_mvc.Navigator;
 import org.olmec.ui_mvc.Preferences;
+import org.olmec.ui_mvc.ServiceModule;
 import org.olmec.ui_mvc.model.EventTO;
 import org.olmec.ui_mvc.model.OverviewModel;
+import org.olmec.ui_mvc.view.EditEventView;
 import org.olmec.ui_mvc.view.Overview;
 
 import java.util.List;
@@ -54,6 +59,28 @@ public class OverviewController {
           model.selectEvent(event);
         } else {
           model.selectEvent(null);
+        }
+      }
+    });
+
+    view.onEdit(new Consumer<EventTO>() {
+      @Override
+      public void accept(EventTO event) {
+        Navigator navigator = Navigator.getInstance();
+
+        if (navigator.getScreen(Navigator.EDIT_EVENT) != null) {
+          EditEventView view = (EditEventView) navigator.getScreen(Navigator.EDIT_EVENT);
+          view.getModel().setEvent(event);
+          navigator.setScreen(Navigator.EDIT_EVENT);
+        } else {
+          Injector injector = Guice.createInjector(new ServiceModule());
+          final EditEventController
+              controller =
+              injector.getInstance(EditEventController.class);
+          controller.getView().getModel().setEvent(event);
+
+          navigator.addScreen(Navigator.EDIT_EVENT, controller.getView());
+          navigator.setScreen(Navigator.EDIT_EVENT);
         }
       }
     });

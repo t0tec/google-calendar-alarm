@@ -1,8 +1,6 @@
 package org.olmec.ui_mvc.view;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import it.sauronsoftware.cron4j.Scheduler;
@@ -13,8 +11,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.olmec.ui_mvc.Alarm;
 import org.olmec.ui_mvc.Navigator;
 import org.olmec.ui_mvc.Preferences;
-import org.olmec.ui_mvc.ServiceModule;
-import org.olmec.ui_mvc.controller.EditEventController;
 import org.olmec.ui_mvc.model.EventTO;
 import org.olmec.ui_mvc.model.OverviewModel;
 import org.slf4j.Logger;
@@ -93,6 +89,8 @@ public class Overview extends AnchorPane {
   private Consumer<String> showEventsBtnObserver;
 
   private Consumer<EventTO> selectObserver;
+
+  private Consumer<EventTO> editBtnObserver;
 
   private Consumer<EventTO> deleteBtnObserver;
 
@@ -207,10 +205,13 @@ public class Overview extends AnchorPane {
     this.selectObserver = observer;
   }
 
+  public void onEdit(Consumer<EventTO> observer) {
+    this.editBtnObserver = observer;
+  }
+
   public void onDelete(Consumer<EventTO> observer) {
     this.deleteBtnObserver = observer;
   }
-
 
   public void showEventsBtnPressed() {
     if (showEventsBtnObserver != null) {
@@ -324,19 +325,8 @@ public class Overview extends AnchorPane {
   public void editEventBtnPressed() {
     EventTO item = eventList.getSelectionModel().getSelectedItem();
 
-    Navigator navigator = Navigator.getInstance();
-
-    if (navigator.getScreen(Navigator.EDIT_EVENT) != null) {
-      EditEventView view = (EditEventView) navigator.getScreen(Navigator.EDIT_EVENT);
-      view.getModel().setEvent(item);
-      navigator.setScreen(Navigator.EDIT_EVENT);
-    } else {
-      Injector injector = Guice.createInjector(new ServiceModule());
-      final EditEventController controller = injector.getInstance(EditEventController.class);
-      controller.getView().getModel().setEvent(item);
-
-      navigator.addScreen(Navigator.EDIT_EVENT, controller.getView());
-      navigator.setScreen(Navigator.EDIT_EVENT);
+    if (editBtnObserver != null) {
+      editBtnObserver.accept(item);
     }
   }
 
