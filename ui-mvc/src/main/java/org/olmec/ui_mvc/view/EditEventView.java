@@ -80,16 +80,16 @@ public class EditEventView extends AnchorPane {
       @Override
       public void run() {
         if (model.getEvent() != null) {
-          eventTitleTxtFld.setText(model.getEvent().getSummary());
-          descrEventTxtFld.setText(model.getEvent().getDescription());
+          eventTitleTxtFld.setText(model.getEvent().getEvent().getSummary());
+          descrEventTxtFld.setText(model.getEvent().getEvent().getDescription());
 
-          DateTime dt = new DateTime(model.getEvent().getStart());
+          DateTime dt = new DateTime(model.getEvent().getEvent().getStart().getDateTime().getValue());
           startDatePicker
               .setValue(LocalDate.of(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()));
           startHourPicker.getValueFactory().setValue(dt.getHourOfDay());
           startMinutePicker.getValueFactory().setValue(dt.getMinuteOfHour());
 
-          dt = new DateTime(model.getEvent().getEnd());
+          dt = new DateTime(model.getEvent().getEvent().getEnd().getDateTime().getValue());
           endDatePicker
               .setValue(LocalDate.of(dt.getYear(), dt.getMonthOfYear(), dt.getDayOfMonth()));
           endHourPicker.getValueFactory().setValue(dt.getHourOfDay());
@@ -143,8 +143,8 @@ public class EditEventView extends AnchorPane {
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setResizable(true);
       alert.initOwner(this.getScene().getWindow());
-      alert.setTitle("Event added!");
-      alert.setContentText("You've updated  event to your calendar!");
+      alert.setTitle("Event updated!");
+      alert.setContentText("You've updated an event from your calendar!");
       alert.show();
     }
   }

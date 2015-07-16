@@ -186,6 +186,9 @@ public class GoogleCalendarService implements GoogleCalendar {
   public Event updateEvent(Event event, String calendarId) {
     Event updatedEvent = new Event();
     try {
+      // http://www.kanzaki.com/docs/ical/sequence.html
+      // you have to increment the sequence property each time you do an update.
+      event.setSequence(event.getSequence() + 1);
       updatedEvent = getCalendarService().events().update(calendarId, event.getId(),
                                                           event).execute();
     } catch (IOException io) {

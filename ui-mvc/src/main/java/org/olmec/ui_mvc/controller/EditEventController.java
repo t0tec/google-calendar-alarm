@@ -37,6 +37,7 @@ public class EditEventController {
       public void accept(EventTO event) {
         Event result = googleCalendar.updateEvent(event.getEvent(), Preferences.getInstance().getValue(
             "googleCalendarId"));
+
         model.setEvent(new EventTO(result));
       }
     });

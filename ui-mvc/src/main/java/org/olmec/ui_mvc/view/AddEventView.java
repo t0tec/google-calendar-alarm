@@ -103,7 +103,7 @@ public class AddEventView extends AnchorPane {
 
   public void saveBtnPressed() {
     if (saveBtnObserver != null && isInputValid()) {
-      EventTO eventTO = new EventTO().getBuilder().summary(eventTitleTxtFld.getText())
+      EventTO event = new EventTO().getBuilder().summary(eventTitleTxtFld.getText())
           .description(descrEventTxtFld.getText())
           .start(extractJodaDateTime(startDatePicker.getValue(),
                                      startHourPicker.getValue(),
@@ -112,7 +112,7 @@ public class AddEventView extends AnchorPane {
                                    endHourPicker.getValue(),
                                    endMinutePicker.getValue())).build();
 
-      saveBtnObserver.accept(eventTO);
+      saveBtnObserver.accept(event);
 
       resetValues();
 
@@ -165,7 +165,7 @@ public class AddEventView extends AnchorPane {
       alert.setResizable(true);
       alert.initOwner(this.getScene().getWindow());
       alert.setTitle("Time range not valid!");
-      alert.setContentText("The specified time rang is not valid!");
+      alert.setContentText("The specified time range is not valid!");
       alert.show();
 
       isValid = false;

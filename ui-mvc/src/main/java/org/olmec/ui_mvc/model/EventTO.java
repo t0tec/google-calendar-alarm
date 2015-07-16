@@ -47,10 +47,11 @@ public class EventTO {
 
   private EventTO(Builder builder) {
     Event event = new Event();
+    event.setId(builder.id);
     event.setSummary(builder.summary);
     event.setDescription(builder.description);
-    event.setStart(builder.extractEventDateTime(builder.start));
-    event.setEnd(builder.extractEventDateTime(builder.end));
+    event.setStart(this.extractEventDateTime(builder.start));
+    event.setEnd(this.extractEventDateTime(builder.end));
 
     this.event = new SimpleObjectProperty<>(event);
 
@@ -123,6 +124,7 @@ public class EventTO {
 
   public void setEnd(DateTime end) {
     this.end.setValue(end);
+    this.event.getValue().setEnd(this.extractEventDateTime(end));
   }
 
   public final DateTime getStart() {
@@ -135,10 +137,16 @@ public class EventTO {
 
   public void setStart(DateTime start) {
     this.start.setValue(start);
+    this.event.getValue().setStart(this.extractEventDateTime(start));
   }
 
   public static Callback<EventTO, Observable[]> extractor() {
-    return (EventTO e) -> new Observable[]{e.eventProperty(), e.idProperty(), e.summaryProperty(), e.descriptionProperty(), e.startProperty(), e.endProperty()};
+    return new Callback<EventTO, Observable[]>() {
+      @Override
+      public Observable[] call(EventTO e) {
+        return new Observable[]{e.eventProperty(), e.idProperty(), e.summaryProperty(), e.descriptionProperty(), e.startProperty(), e.endProperty()};
+      }
+    };
   }
 
   /**
@@ -185,18 +193,18 @@ public class EventTO {
 
       return build;
     }
+  }
 
-    public EventDateTime extractEventDateTime(final DateTime dt) {
-      dt.withZone(DateTimeZone.forTimeZone(
-          TimeZone.getTimeZone(Preferences.getInstance().getValue("timeZone"))));
+  private EventDateTime extractEventDateTime(final DateTime dt) {
+    dt.withZone(DateTimeZone.forTimeZone(
+        TimeZone.getTimeZone(Preferences.getInstance().getValue("timeZone"))));
 
-      // output format example: 2015-06-29T09:00:00+02:00
-      EventDateTime eventDateTime = new EventDateTime()
-          .setDateTime(
-              new com.google.api.client.util.DateTime(dt.toString("yyyy-MM-dd'T'HH:mm:ssZZ")))
-          .setTimeZone(Preferences.getInstance().getValue("timeZone"));
+    // output format example: 2015-06-29T09:00:00+02:00
+    EventDateTime eventDateTime = new EventDateTime()
+        .setDateTime(
+            new com.google.api.client.util.DateTime(dt.toString("yyyy-MM-dd'T'HH:mm:ssZZ")))
+        .setTimeZone(Preferences.getInstance().getValue("timeZone"));
 
-      return eventDateTime;
-    }
+    return eventDateTime;
   }
 }
